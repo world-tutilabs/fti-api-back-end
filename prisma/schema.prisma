@@ -1,0 +1,329 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model NovosTryouts {
+  id          Int    @id @default(autoincrement())
+  tryout      String @db.VarChar(250)
+  molde       String @db.VarChar(250)
+  cliente     String @db.VarChar(250)
+  produto     String @db.VarChar(250)
+  cod_produto String @db.VarChar(250)
+}
+
+model Fti {
+  id                    Int                     @id @default(autoincrement())
+  produto               String                  @db.VarChar(250)
+  cod_molde             String                  @db.VarChar(250)
+  cliente               String                  @db.VarChar(250)
+  modelo                String                  @db.VarChar(250)
+  maquina               String                  @db.VarChar(250)
+  materia_prima         String                  @db.VarChar(250)
+  pigmento              String                  @db.VarChar(250)
+  qtd_cavidade          Int                     @default(0)
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  AquecedorAgua         AquecedorAgua[]
+  BicoCamaraQuente      BicoCamaraQuente[]
+  Cavidade              Cavidade[]
+  Cursos                Cursos[]
+  Dimensao              Dimensao[]
+  DispositivoSeguranca  DispositivoSeguranca[]
+  Dosador               Dosador[]
+  Dosagem               Dosagem[]
+  Estufagem             Estufagem[]
+  Homologacao           Homologacao[]
+  Imagens               Imagens[]
+  InfoGeraisRegulagem   InfoGeraisRegulagem[]
+  Injecao               Injecao[]
+  ObservacoesGerais     ObservacoesGerais[]
+  Pressoes              Pressoes[]
+  ProgramacaoMachos     ProgramacaoMachos[]
+  Recalque              Recalque[]
+  RefrigeracaoMolde     RefrigeracaoMolde[]
+  Resume                Resume[]
+  Sequenciador          Sequenciador[]
+  TemperaturaCilindro   TemperaturaCilindro[]
+  TemperaturaProgramada TemperaturaProgramada[]
+  Tempos                Tempos[]
+}
+
+model Homologacao {
+  id       Int    @id @default(autoincrement())
+  ftiId    Int
+  statusId Int
+  revisao  Int
+  Fti      Fti    @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_homologacao")
+  Status   Status @relation(fields: [statusId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK2_status_homologacao")
+
+  @@index([ftiId])
+  @@index([statusId])
+}
+
+model Status {
+  id          Int           @id
+  descricao   String        @default("") @db.VarChar(250)
+  Homologacao Homologacao[]
+}
+
+model AquecedorAgua {
+  id              Int @id @default(autoincrement())
+  ftiId           Int
+  check_aquecedor Int @default(0)
+  Fti             Fti @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_aquecedor_agua")
+
+  @@index([ftiId])
+}
+
+model BicoCamaraQuente {
+  id                       Int    @id @default(autoincrement())
+  ftiId                    Int
+  check_bico_camara_quente String @db.VarChar(250)
+  peso_total_injecao       String @default("0") @db.VarChar(250)
+  peso_medio_bruto         String @default("0") @db.VarChar(250)
+  peso_medio_liquido       String @default("0") @db.VarChar(250)
+  peso_galho               String @default("0") @db.VarChar(250)
+  Fti                      Fti    @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_bico_camara_quente")
+
+  @@index([ftiId])
+}
+
+model Cavidade {
+  id       Int   @id @default(autoincrement())
+  ftiId    Int
+  cavidade Float @db.Float
+  Fti      Fti   @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fit_cavidade")
+
+  @@index([ftiId])
+}
+
+model Cursos {
+  id                    Int    @id @default(autoincrement())
+  ftiId                 Int
+  curso_abertura        String @default("0") @db.VarChar(250)
+  curso_descompressao   String @default("0") @db.VarChar(250)
+  tempo_recalque        String @default("0") @db.VarChar(250)
+  curso_avanco_extrator String @default("0") @db.VarChar(250)
+  inicio_protecao_molde String @default("0") @db.VarChar(250)
+  Fti                   Fti    @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_cursos")
+
+  @@index([ftiId])
+}
+
+model Dimensao {
+  id          Int    @id @default(autoincrement())
+  ftiId       Int
+  altura      Int    @default(0)
+  comprimento Int    @default(0)
+  largura     Int    @default(0)
+  produto     String @default("0") @db.VarChar(250)
+  Fti         Fti    @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_dimensao")
+
+  @@index([ftiId])
+}
+
+model DispositivoSeguranca {
+  id                    Int @id @default(autoincrement())
+  ftiId                 Int
+  check_dispositivo_seg Int
+  sensor                Int
+  micro_sw              Int
+  fim_curso             Int
+  Fti                   Fti @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_dispositivo_seg")
+
+  @@index([ftiId])
+}
+
+model Dosador {
+  id                 Int    @id @default(autoincrement())
+  ftiId              Int
+  check_dosador      Int    @default(0)
+  velocidade_dosagem String @default("0") @db.VarChar(250)
+  tempo_dosagem      String @default("0") @db.VarChar(250)
+  Fti                Fti    @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_dosador")
+
+  @@index([ftiId])
+}
+
+model Dosagem {
+  id                    Int    @id @default(autoincrement())
+  ftiId                 Int
+  dosagem_velocidade    String @default("0") @db.VarChar(250)
+  dosagem_contrapressao String @default("0") @db.VarChar(250)
+  dosagem_pressao       String @default("0") @db.VarChar(250)
+  dosagem_posicao       String @default("0") @db.VarChar(250)
+  dosagem_tempo         String @default("0") @db.VarChar(250)
+  Fti                   Fti    @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_dosagem")
+
+  @@index([ftiId])
+}
+
+model Estufagem {
+  id          Int    @id @default(autoincrement())
+  fitId       Int
+  temperatura String @default("0") @db.VarChar(250)
+  tempo       Int    @default(0)
+  Fti         Fti    @relation(fields: [fitId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_estufagem")
+
+  @@index([fitId])
+}
+
+model Imagens {
+  id          Int    @id @default(autoincrement())
+  ftiId       Int
+  img_produto String @db.VarChar(250)
+  img_camara  String @db.VarChar(250)
+  Fti         Fti    @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_imagens")
+
+  @@index([ftiId])
+}
+
+model InfoGeraisRegulagem {
+  id               Int    @id @default(autoincrement())
+  ftiId            Int
+  bucha_injecao    String @db.VarChar(250)
+  bico_injecao     String @db.VarChar(250)
+  prog_injecao     String @db.VarChar(250)
+  modo             String @db.VarChar(250)
+  ciclo_total      String @db.VarChar(250)
+  producao_horaria Int    @default(0)
+  Fti              Fti    @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_info_gerais")
+
+  @@index([ftiId])
+}
+
+model Injecao {
+  id                 Int    @id @default(autoincrement())
+  ftiId              Int
+  injecao_velocidade String @default("0") @db.VarChar(250)
+  injecao_pressao    String @default("0") @db.VarChar(250)
+  injecao_posicao    String @default("0") @db.VarChar(250)
+  Fti                Fti    @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_injecao")
+
+  @@index([ftiId])
+}
+
+model ObservacoesGerais {
+  id               Int    @id @default(autoincrement())
+  ftiId            Int
+  tecnico          String @default("0") @db.VarChar(250)
+  coordernador_eng String @default("0") @db.VarChar(250)
+  Fti              Fti    @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_observacoes_gerais")
+
+  @@index([ftiId])
+}
+
+model Pressoes {
+  id                    Int    @id @default(autoincrement())
+  ftiId                 Int
+  pressao_media         String @default("0") @db.VarChar(250)
+  pressao_travamento    String @default("0") @db.VarChar(250)
+  pressao_avanco        String @default("0") @db.VarChar(250)
+  pressao_recuo         String @default("0") @db.VarChar(250)
+  pressao_descompressao String @default("0") @db.VarChar(250)
+  peso_galho            String @default("0") @db.VarChar(250)
+  Fti                   Fti    @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_pressoes")
+
+  @@index([ftiId])
+}
+
+model ProgramacaoMachos {
+  id                Int    @id @default(autoincrement())
+  ftiId             Int
+  check_prog_machos Int    @default(0)
+  macho             Json
+  check_tempo       String @default("") @db.VarChar(250)
+  Fti               Fti    @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_prog_machos")
+
+  @@index([ftiId])
+}
+
+model Recalque {
+  id                  Int    @id @default(autoincrement())
+  ftiId               Int
+  recalque_velocidade String @default("0") @db.VarChar(250)
+  recalque_pressao    String @default("0") @db.VarChar(250)
+  recalque_tempo      String @default("0") @db.VarChar(250)
+  recalque_posicao    String @default("0") @db.VarChar(250)
+  Fti                 Fti    @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_recalque")
+
+  @@index([ftiId])
+}
+
+model RefrigeracaoMolde {
+  id        Int   @id @default(autoincrement())
+  ftiId     Int
+  movel     Float @db.Float
+  flutuante Float @db.Float
+  fixo      Float @db.Float
+  gaveta    Float @db.Float
+  Fti       Fti   @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_refrigeracao_molde")
+
+  @@index([ftiId])
+}
+
+model Resume {
+  id                  Int   @id @default(autoincrement())
+  ftiId               Int
+  peso_total_cavidade Float
+  peso_total_injecao  Float
+  peso_medio_bruto    Float
+  peso_medio_liquido  Float
+  peso_galho          Float
+  Fti                 Fti   @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_resume")
+
+  @@index([ftiId])
+}
+
+model Sequenciador {
+  id                     Int    @id @default(autoincrement())
+  ftiId                  Int
+  validacao_sequenciador Int    @default(0)
+  bico                   String @default("0") @db.VarChar(250)
+  delay                  String @default("0") @db.VarChar(250)
+  open                   String @default("0") @db.VarChar(250)
+  modo                   String @default("0") @db.VarChar(250)
+  Fti                    Fti    @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_sequenciador")
+
+  @@index([ftiId])
+}
+
+model TemperaturaCilindro {
+  id    Int    @id @default(autoincrement())
+  ftiId Int
+  bico  String @default("0") @db.VarChar(250)
+  zona  String @default("0") @db.VarChar(250)
+  Fti   Fti    @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_temperatura_cilindro")
+
+  @@index([ftiId])
+}
+
+model TemperaturaProgramada {
+  id     Int    @id @default(autoincrement())
+  ftiId  Int
+  indice String @db.VarChar(250)
+  Fti    Fti    @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_temperatura_programada")
+
+  @@index([ftiId])
+}
+
+model Tempos {
+  id                          Int    @id @default(autoincrement())
+  ftiId                       Int
+  tempo_fechamento            String @default("0") @db.VarChar(250)
+  tempo_injecao               String @default("0") @db.VarChar(250)
+  tempo_recalque              String @default("0") @db.VarChar(250)
+  tempo_resfriamento          String @default("0") @db.VarChar(250)
+  tempo_abertura_molde        String @default("0") @db.VarChar(250)
+  tempo_extracao              String @default("0") @db.VarChar(250)
+  tempo_retirada_remocao_peca String @default("0") @db.VarChar(250)
+  reciclo_outros              String @default("0") @db.VarChar(250)
+  Fti                         Fti    @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_tempos")
+
+  @@index([ftiId])
+}

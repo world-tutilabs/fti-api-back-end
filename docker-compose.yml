@@ -1,0 +1,13 @@
+version: '2.16.0'
+
+services:
+  db-mysql-fti-container:
+    container_name: db-mysql-fti-container
+    image: 'mysql:8.0.0'
+    volumes:
+      - ./vdata/:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=de4453abaa3ee450c1444f20ae8ac21d
+    ports:
+      - 3301:3306
+    restart: always
