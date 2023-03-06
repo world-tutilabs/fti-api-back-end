@@ -19,12 +19,14 @@ model NovosTryouts {
 model Fti {
   id                    Int                     @id @default(autoincrement())
   produto               String                  @db.VarChar(250)
+  cod_produto           String                  @db.VarChar(250)
   cod_molde             String                  @db.VarChar(250)
   cliente               String                  @db.VarChar(250)
   modelo                String                  @db.VarChar(250)
   maquina               String                  @db.VarChar(250)
   materia_prima         String                  @db.VarChar(250)
   pigmento              String                  @db.VarChar(250)
+  cor                   String                  @db.VarChar(250)
   qtd_cavidade          Int                     @default(0)
   createdAt             DateTime                @default(now())
   updatedAt             DateTime                @updatedAt
@@ -46,7 +48,7 @@ model Fti {
   ProgramacaoMachos     ProgramacaoMachos[]
   Recalque              Recalque[]
   RefrigeracaoMolde     RefrigeracaoMolde[]
-  Resume                Resume[]
+  Resumo                Resumo[]
   Sequenciador          Sequenciador[]
   TemperaturaCilindro   TemperaturaCilindro[]
   TemperaturaProgramada TemperaturaProgramada[]
@@ -54,15 +56,38 @@ model Fti {
 }
 
 model Homologacao {
-  id       Int    @id @default(autoincrement())
-  ftiId    Int
-  statusId Int
-  revisao  Int
-  Fti      Fti    @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_homologacao")
-  Status   Status @relation(fields: [statusId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK2_status_homologacao")
+  id        Int         @id @default(autoincrement())
+  ftiId     Int
+  statusId  Int
+  revisao   Int
+  Fti       Fti         @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_homologacao")
+  Status    Status      @relation(fields: [statusId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK2_status_homologacao")
+  Avaliacao Avaliacao[]
 
   @@index([ftiId])
   @@index([statusId])
+}
+
+model Avaliacao {
+  id            Int         @id @default(autoincrement())
+  homologacaoId Int
+  cargoId       Int
+  nome          String
+  aprovado      Boolean
+  descricao     Boolean
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  Homologacao   Homologacao @relation(fields: [homologacaoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_homologacao_avaliacao")
+  Cargo         Cargo       @relation(fields: [cargoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK2_cargo_avali")
+
+  @@index([homologacaoId])
+  @@index([cargoId])
+}
+
+model Cargo {
+  id        Int         @id @default(autoincrement())
+  descricao String
+  Avaliacao Avaliacao[]
 }
 
 model Status {
@@ -267,7 +292,7 @@ model RefrigeracaoMolde {
   @@index([ftiId])
 }
 
-model Resume {
+model Resumo {
   id                  Int   @id @default(autoincrement())
   ftiId               Int
   peso_total_cavidade Float
@@ -275,7 +300,7 @@ model Resume {
   peso_medio_bruto    Float
   peso_medio_liquido  Float
   peso_galho          Float
-  Fti                 Fti   @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_resume")
+  Fti                 Fti   @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_resumo")
 
   @@index([ftiId])
 }

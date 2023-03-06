@@ -14,12 +14,14 @@ CREATE TABLE `NovosTryouts` (
 CREATE TABLE `Fti` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `produto` VARCHAR(250) NOT NULL,
+    `cod_produto` VARCHAR(250) NOT NULL,
     `cod_molde` VARCHAR(250) NOT NULL,
     `cliente` VARCHAR(250) NOT NULL,
     `modelo` VARCHAR(250) NOT NULL,
     `maquina` VARCHAR(250) NOT NULL,
     `materia_prima` VARCHAR(250) NOT NULL,
     `pigmento` VARCHAR(250) NOT NULL,
+    `cor` VARCHAR(250) NOT NULL,
     `qtd_cavidade` INTEGER NOT NULL DEFAULT 0,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -36,6 +38,30 @@ CREATE TABLE `Homologacao` (
 
     INDEX `Homologacao_ftiId_idx`(`ftiId`),
     INDEX `Homologacao_statusId_idx`(`statusId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Avaliacao` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `homologacaoId` INTEGER NOT NULL,
+    `cargoId` INTEGER NOT NULL,
+    `nome` VARCHAR(191) NOT NULL,
+    `aprovado` BOOLEAN NOT NULL,
+    `descricao` BOOLEAN NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    INDEX `Avaliacao_homologacaoId_idx`(`homologacaoId`),
+    INDEX `Avaliacao_cargoId_idx`(`cargoId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Cargo` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `descricao` VARCHAR(191) NOT NULL,
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -261,7 +287,7 @@ CREATE TABLE `RefrigeracaoMolde` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Resume` (
+CREATE TABLE `Resumo` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `ftiId` INTEGER NOT NULL,
     `peso_total_cavidade` DOUBLE NOT NULL,
@@ -270,7 +296,7 @@ CREATE TABLE `Resume` (
     `peso_medio_liquido` DOUBLE NOT NULL,
     `peso_galho` DOUBLE NOT NULL,
 
-    INDEX `Resume_ftiId_idx`(`ftiId`),
+    INDEX `Resumo_ftiId_idx`(`ftiId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -333,6 +359,12 @@ ALTER TABLE `Homologacao` ADD CONSTRAINT `FK1_fti_homologacao` FOREIGN KEY (`fti
 ALTER TABLE `Homologacao` ADD CONSTRAINT `FK2_status_homologacao` FOREIGN KEY (`statusId`) REFERENCES `Status`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
+ALTER TABLE `Avaliacao` ADD CONSTRAINT `FK1_homologacao_avaliacao` FOREIGN KEY (`homologacaoId`) REFERENCES `Homologacao`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE `Avaliacao` ADD CONSTRAINT `FK2_cargo_avali` FOREIGN KEY (`cargoId`) REFERENCES `Cargo`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- AddForeignKey
 ALTER TABLE `AquecedorAgua` ADD CONSTRAINT `FK1_fti_aquecedor_agua` FOREIGN KEY (`ftiId`) REFERENCES `Fti`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
@@ -384,7 +416,7 @@ ALTER TABLE `Recalque` ADD CONSTRAINT `FK1_fti_recalque` FOREIGN KEY (`ftiId`) R
 ALTER TABLE `RefrigeracaoMolde` ADD CONSTRAINT `FK1_fti_refrigeracao_molde` FOREIGN KEY (`ftiId`) REFERENCES `Fti`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE `Resume` ADD CONSTRAINT `FK1_fti_resume` FOREIGN KEY (`ftiId`) REFERENCES `Fti`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `Resumo` ADD CONSTRAINT `FK1_fti_resumo` FOREIGN KEY (`ftiId`) REFERENCES `Fti`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE `Sequenciador` ADD CONSTRAINT `FK1_fti_sequenciador` FOREIGN KEY (`ftiId`) REFERENCES `Fti`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
