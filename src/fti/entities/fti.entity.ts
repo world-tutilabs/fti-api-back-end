@@ -1,5 +1,6 @@
 export class Fti {
   id: number;
+  statusId: number;
   produto: string;
   cod_produto: string;
   cod_molde: string;

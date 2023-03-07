@@ -13,7 +13,6 @@ CREATE TABLE `NovosTryouts` (
 -- CreateTable
 CREATE TABLE `Fti` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `statusId` INTEGER NOT NULL,
     `produto` VARCHAR(250) NOT NULL,
     `cod_produto` VARCHAR(250) NOT NULL,
     `cod_molde` VARCHAR(250) NOT NULL,
@@ -27,17 +26,18 @@ CREATE TABLE `Fti` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    INDEX `Fti_statusId_idx`(`statusId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Homologacao` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `statusId` INTEGER NOT NULL,
     `ftiId` INTEGER NOT NULL,
     `revisao` INTEGER NOT NULL,
 
     INDEX `Homologacao_ftiId_idx`(`ftiId`),
+    INDEX `Homologacao_statusId_idx`(`statusId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -353,10 +353,10 @@ CREATE TABLE `Tempos` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `Fti` ADD CONSTRAINT `Fti_statusId_fkey` FOREIGN KEY (`statusId`) REFERENCES `Status`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `Homologacao` ADD CONSTRAINT `FK1_fti_homologacao` FOREIGN KEY (`ftiId`) REFERENCES `Fti`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE `Homologacao` ADD CONSTRAINT `FK1_fti_homologacao` FOREIGN KEY (`ftiId`) REFERENCES `Fti`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `Homologacao` ADD CONSTRAINT `Homologacao_statusId_fkey` FOREIGN KEY (`statusId`) REFERENCES `Status`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE `Avaliacao` ADD CONSTRAINT `FK1_homologacao_avaliacao` FOREIGN KEY (`homologacaoId`) REFERENCES `Homologacao`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
