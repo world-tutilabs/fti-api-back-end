@@ -18,6 +18,7 @@ model NovosTryouts {
 
 model Fti {
   id                    Int                     @id @default(autoincrement())
+  statusId              Int
   produto               String                  @db.VarChar(250)
   cod_produto           String                  @db.VarChar(250)
   cod_molde             String                  @db.VarChar(250)
@@ -30,6 +31,7 @@ model Fti {
   qtd_cavidade          Int                     @default(0)
   createdAt             DateTime                @default(now())
   updatedAt             DateTime                @updatedAt
+  Status                Status                  @relation(fields: [statusId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   AquecedorAgua         AquecedorAgua[]
   BicoCamaraQuente      BicoCamaraQuente[]
   Cavidade              Cavidade[]
@@ -53,19 +55,18 @@ model Fti {
   TemperaturaCilindro   TemperaturaCilindro[]
   TemperaturaProgramada TemperaturaProgramada[]
   Tempos                Tempos[]
+
+  @@index([statusId])
 }
 
 model Homologacao {
   id        Int         @id @default(autoincrement())
   ftiId     Int
-  statusId  Int
   revisao   Int
   Fti       Fti         @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_homologacao")
-  Status    Status      @relation(fields: [statusId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK2_status_homologacao")
   Avaliacao Avaliacao[]
 
   @@index([ftiId])
-  @@index([statusId])
 }
 
 model Avaliacao {
@@ -74,7 +75,7 @@ model Avaliacao {
   cargoId       Int
   nome          String
   aprovado      Boolean
-  descricao     Boolean
+  observacao    String
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
   Homologacao   Homologacao @relation(fields: [homologacaoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_homologacao_avaliacao")
@@ -91,9 +92,9 @@ model Cargo {
 }
 
 model Status {
-  id          Int           @id
-  descricao   String        @default("") @db.VarChar(250)
-  Homologacao Homologacao[]
+  id        Int    @id
+  descricao String @default("") @db.VarChar(250)
+  Fti       Fti[]
 }
 
 model AquecedorAgua {
