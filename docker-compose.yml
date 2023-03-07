@@ -23,6 +23,8 @@ services:
     env_file:
       - .env
     command: bash -c "yarn --only=prod && yarn prisma generate && yarn start:prod"
+    ports:
+      - '9001:9001'
     volumes:
       - ./dist/:/usr/src/api-node-fti/dist/
       - ./package.json:/usr/src/api-node-fti/package.json
