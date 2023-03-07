@@ -35,33 +35,10 @@ CREATE TABLE `Homologacao` (
     `statusId` INTEGER NOT NULL,
     `ftiId` INTEGER NOT NULL,
     `revisao` INTEGER NOT NULL,
+    `homologacao` JSON NOT NULL,
 
     INDEX `Homologacao_ftiId_idx`(`ftiId`),
     INDEX `Homologacao_statusId_idx`(`statusId`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `Avaliacao` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `homologacaoId` INTEGER NOT NULL,
-    `cargoId` INTEGER NOT NULL,
-    `nome` VARCHAR(191) NOT NULL,
-    `aprovado` BOOLEAN NOT NULL,
-    `observacao` VARCHAR(191) NOT NULL,
-    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NOT NULL,
-
-    INDEX `Avaliacao_homologacaoId_idx`(`homologacaoId`),
-    INDEX `Avaliacao_cargoId_idx`(`cargoId`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `Cargo` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `descricao` VARCHAR(191) NOT NULL,
-
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -357,12 +334,6 @@ ALTER TABLE `Homologacao` ADD CONSTRAINT `FK1_fti_homologacao` FOREIGN KEY (`fti
 
 -- AddForeignKey
 ALTER TABLE `Homologacao` ADD CONSTRAINT `Homologacao_statusId_fkey` FOREIGN KEY (`statusId`) REFERENCES `Status`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- AddForeignKey
-ALTER TABLE `Avaliacao` ADD CONSTRAINT `FK1_homologacao_avaliacao` FOREIGN KEY (`homologacaoId`) REFERENCES `Homologacao`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- AddForeignKey
-ALTER TABLE `Avaliacao` ADD CONSTRAINT `FK2_cargo_avali` FOREIGN KEY (`cargoId`) REFERENCES `Cargo`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE `AquecedorAgua` ADD CONSTRAINT `FK1_fti_aquecedor_agua` FOREIGN KEY (`ftiId`) REFERENCES `Fti`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
