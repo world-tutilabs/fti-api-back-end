@@ -44,7 +44,7 @@ CREATE TABLE `Homologacao` (
 
 -- CreateTable
 CREATE TABLE `Status` (
-    `id` INTEGER NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `descricao` VARCHAR(250) NOT NULL DEFAULT '',
 
     PRIMARY KEY (`id`)

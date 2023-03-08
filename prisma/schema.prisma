@@ -69,7 +69,7 @@ model Homologacao {
 }
 
 model Status {
-  id          Int           @id
+  id          Int           @id @default(autoincrement())
   descricao   String        @default("") @db.VarChar(250)
   Homologacao Homologacao[]
 }
