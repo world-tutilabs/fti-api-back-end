@@ -1,7 +1,7 @@
 // import { Fti } from './entities/fti.entity';
 import { PrismaService } from './../prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
-// import { CreateFtiDto } from './dto/create-fti.dto';
+import { CreateFtiDto } from './dto/create-fti.dto';
 import { UpdateFtiDto } from './dto/update-fti.dto';
 import { getAllFtiDto } from './dto/get-all-fti.dto';
 
@@ -9,26 +9,26 @@ import { getAllFtiDto } from './dto/get-all-fti.dto';
 export class FtiService {
   constructor(private prisma: PrismaService) {}
 
-  // async create(data: CreateFtiDto): Promise<Fti> {
-  //   return await this.prisma.fti.create({
-  //     data: {
-  //       cliente: data.cliente,
-  //       produto: data.produto,
-  //       cod_produto: data.cod_molde,
-  //       modelo: data.modelo,
-  //       maquina: data.maquina,
-  //       materia_prima: data.materia_prima,
-  //       cor: data.cor,
-  //       pigmento: data.pigmento,
-  //       cod_molde: data.cod_molde,
-  //       AquecedorAgua: {
-  //         create: {
-  //           check_aquecedor: data.AquecedorAgua.check_aquecedor,
-  //         },
-  //       },
-  //     },
-  //   });
-  // }
+  async create(data: CreateFtiDto): Promise<Fti> {
+    return await this.prisma.fti.create({
+      data: {
+        cliente: data.cliente,
+        produto: data.produto,
+        cod_produto: data.cod_molde,
+        modelo: data.modelo,
+        maquina: data.maquina,
+        materia_prima: data.materia_prima,
+        cor: data.cor,
+        pigmento: data.pigmento,
+        cod_molde: data.cod_molde,
+        AquecedorAgua: {
+          create: {
+            check_aquecedor: data.AquecedorAgua.check_aquecedor,
+          },
+        },
+      },
+    });
+  }
 
   async findAllEmAprovacao(): Promise<getAllFtiDto[]> {
     return await this.prisma.fti.findMany({

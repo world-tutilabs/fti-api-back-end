@@ -1,13 +1,37 @@
-version: '2.16.0'
-
+version: '3.8'
 services:
-  db-mysql-fti-container:
+  db-mysql-fti:
     container_name: db-mysql-fti-container
-    image: 'mysql:8.0.0'
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 48713588ae6ae525eeb52447bb559944
+      MYSQL_DATABASE: fti
+      MYSQL_PASSWORD: 48713588ae6ae525eeb52447bb559944
+    ports:
+      - '3302:3306'
     volumes:
       - ./vdata/:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=de4453abaa3ee450c1444f20ae8ac21d
-    ports:
-      - 3301:3306
-    restart: always
+
+    networks:
+      - fti
+  # api-fti:
+  #   container_name: api-container-fti
+  #   image: node:18
+  #   working_dir: /usr/src/api-node-fti
+  #   restart: always
+  #   env_file:
+  #     - .env
+  #   command: bash -c "yarn --only=prod && yarn prisma generate && yarn start:prod"
+  #   ports:
+  #     - '9001:9001'
+  #   volumes:
+  #     - ./dist/:/usr/src/api-node-fti/dist/
+  #     - ./package.json:/usr/src/api-node-fti/package.json
+  #     - ./nest-cli.json:/usr/src/api-node-fti/nest-cli.json
+  #     - ./prisma:/usr/src/api-node-fti/prisma/
+  #   networks:
+  #     - fti   
+networks:
+  fti:
+    driver: bridge
