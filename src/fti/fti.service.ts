@@ -32,7 +32,7 @@ export class FtiService {
 
   async findAllEmAprovacao(): Promise<getAllFtiDto[]> {
     return await this.prisma.fti.findMany({
-      where: { statusId: 1 },
+      where: { Homologacao: { every: { statusId: 1 } } },
       select: {
         id: true,
         cod_molde: true,
@@ -40,23 +40,21 @@ export class FtiService {
         produto: true,
         cod_produto: true,
         createdAt: true,
-        updatedAt: true,
         modelo: true,
         maquina: true,
         materia_prima: true,
         cor: true,
         pigmento: true,
-        Status: { select: { descricao: true } },
         Homologacao: {
           select: {
             revisao: true,
+            Status: { select: { descricao: true } },
             Avaliacao: {
               select: {
                 nome: true,
                 Cargo: { select: { descricao: true } },
                 aprovado: true,
                 createdAt: true,
-                updatedAt: true,
               },
             },
           },
@@ -67,7 +65,7 @@ export class FtiService {
 
   async findAllHomologadas(): Promise<getAllFtiDto[]> {
     return await this.prisma.fti.findMany({
-      where: { statusId: 2 },
+      where: { Homologacao: { every: { statusId: 2 } } },
       select: {
         id: true,
         cod_molde: true,
@@ -75,23 +73,21 @@ export class FtiService {
         produto: true,
         cod_produto: true,
         createdAt: true,
-        updatedAt: true,
         modelo: true,
         maquina: true,
         materia_prima: true,
         cor: true,
         pigmento: true,
-        Status: { select: { descricao: true } },
         Homologacao: {
           select: {
             revisao: true,
+            Status: { select: { descricao: true } },
             Avaliacao: {
               select: {
                 nome: true,
                 Cargo: { select: { descricao: true } },
                 aprovado: true,
                 createdAt: true,
-                updatedAt: true,
               },
             },
           },

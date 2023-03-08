@@ -5,7 +5,6 @@ export class getAllFtiDto {
   produto: string;
   cod_produto: string;
   createdAt: Date;
-  updatedAt: Date;
   modelo: string;
   maquina: string;
   materia_prima: string;
