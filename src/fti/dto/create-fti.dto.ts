@@ -1,6 +1,5 @@
 import {
   AquecedorAgua,
-  Avaliacao,
   BicoCamaraQuente,
   Cavidade,
   Cursos,
@@ -40,7 +39,6 @@ export class CreateFtiDto {
   createdAt: Date;
   updatedAt: Date;
   AquecedorAgua: Omit<AquecedorAgua, 'id'>;
-  Avaliacao: Omit<Avaliacao, 'id'>;
   BicoCamaraQuente: Omit<BicoCamaraQuente, 'id'>;
   Cavidade: Omit<Cavidade, 'id'>;
   Cursos: Omit<Cursos, 'id'>;

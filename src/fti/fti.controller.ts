@@ -1,47 +1,23 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FtiService } from './fti.service';
-import { CreateFtiDto } from './dto/create-fti.dto';
-import { UpdateFtiDto } from './dto/update-fti.dto';
 
 @Controller('fti')
+@ApiTags('FTI')
 export class FtiController {
   constructor(private readonly ftiService: FtiService) {}
 
-  @Post()
-  create(@Body() createFtiDto: CreateFtiDto) {
-    return 'this return something';
-  }
-
   @Get('em-aprovacao')
+  @ApiOperation({
+    summary: 'lista todas as FTIs que estão em fase de aprovação',
+  })
   findAllEmAprovacao() {
     return this.ftiService.findAllEmAprovacao();
   }
 
   @Get('homologadas')
+  @ApiOperation({ summary: 'lista todas as FTIs que foram homologadas' })
   findAllHomologadas() {
     return this.ftiService.findAllHomologadas();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.ftiService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFtiDto: UpdateFtiDto) {
-    return this.ftiService.update(+id, updateFtiDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.ftiService.remove(+id);
   }
 }

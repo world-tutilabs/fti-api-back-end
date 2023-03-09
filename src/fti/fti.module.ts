@@ -1,4 +1,4 @@
-import { PrismaService } from './../prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { Module } from '@nestjs/common';
 import { FtiService } from './fti.service';
 import { FtiController } from './fti.controller';
