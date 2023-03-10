@@ -7,35 +7,9 @@ import { FtiRepository } from './repository/fti-repository';
 export class FtiService implements FtiRepository {
   constructor(private prisma: PrismaService) {}
 
-  async findAllEmAprovacao(): Promise<getAllFtiDto[] | null> {
+  async findAll(statusId: number): Promise<getAllFtiDto[] | null> {
     return await this.prisma.fti.findMany({
-      where: { Homologacao: { every: { statusId: 1 } } },
-      select: {
-        id: true,
-        cod_molde: true,
-        cliente: true,
-        produto: true,
-        cod_produto: true,
-        createdAt: true,
-        modelo: true,
-        maquina: true,
-        materia_prima: true,
-        cor: true,
-        pigmento: true,
-        Homologacao: {
-          select: {
-            revisao: true,
-            homologacao: true,
-            Status: { select: { descricao: true } },
-          },
-        },
-      },
-    });
-  }
-
-  async findAllHomologadas(): Promise<getAllFtiDto[] | null> {
-    return await this.prisma.fti.findMany({
-      where: { Homologacao: { every: { statusId: 2 } } },
+      where: { Homologacao: { every: { statusId: statusId } } },
       select: {
         id: true,
         cod_molde: true,

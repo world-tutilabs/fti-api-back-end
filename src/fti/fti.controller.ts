@@ -1,4 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
+import { FindAllParams } from './dto/params/find-all-params';
+import { Controller, Get, Param } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FtiService } from './fti.service';
 
@@ -7,17 +8,11 @@ import { FtiService } from './fti.service';
 export class FtiController {
   constructor(private readonly ftiService: FtiService) {}
 
-  @Get('em-aprovacao')
+  @Get(':statusId')
   @ApiOperation({
-    summary: 'lista todas as FTIs que estão em fase de aprovação',
+    summary: 'lista todas as FTIs de acordo com o status requerido',
   })
-  findAllEmAprovacao() {
-    return this.ftiService.findAllEmAprovacao();
-  }
-
-  @Get('homologadas')
-  @ApiOperation({ summary: 'lista todas as FTIs que foram homologadas' })
-  findAllHomologadas() {
-    return this.ftiService.findAllHomologadas();
+  async findAll(@Param() { statusId }: FindAllParams) {
+    return await this.ftiService.findAll(+statusId);
   }
 }
