@@ -1,4 +1,4 @@
-import { FindAllParams } from './dto/params/find-all-params';
+import { FindAllParams } from './types/params/find-all-params';
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FtiService } from './fti.service';
