@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   Req,
-  UseInterceptors
+  UseInterceptors,
 } from '@nestjs/common';
 import { FtiService } from './fti.service';
 import { CreateFtiDto } from './dto/create-fti.dto';
@@ -23,8 +23,8 @@ export class FtiController {
 
   @Post('/create')
   @UseInterceptors(AnyFilesInterceptor())
-  create(@Body() data: any) {
-    return this.ftiService.create(data)
+  create(@Body() data: CreateFtiDto) {
+    return this.ftiService.create(data);
   }
 
   // @Get('em-aprovacao')
