@@ -1,14 +1,18 @@
-// import { Fti } from './entities/fti.entity';
-import { PrismaService } from './../prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { CreateFtiDto } from './dto/create-fti.dto';
 import { UpdateFtiDto } from './dto/update-fti.dto';
 import { Fti } from '@prisma/client';
+import { FtiRepository } from './repository/fti-repository';
+import { getAllFtiDto } from './dto/get-all-fti.dto';
 
 
 @Injectable()
-export class FtiService {
+export class FtiService implements FtiRepository {
   constructor(private prisma: PrismaService) {}
+  findAll(statusId: number): Promise<getAllFtiDto[]> {
+    throw new Error('Method not implemented.');
+  }
 
   async create(data: CreateFtiDto): Promise<Fti> {
     const {

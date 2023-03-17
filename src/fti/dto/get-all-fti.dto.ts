@@ -10,4 +10,11 @@ export class getAllFtiDto {
   materia_prima: string;
   cor: string;
   pigmento: string;
+  Homologacao: {
+    revisao: number;
+    homologacao: any;
+    Status: {
+      descricao: string;
+    };
+  }[];
 }
