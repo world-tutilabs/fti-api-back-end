@@ -6,7 +6,6 @@ import { Fti, Imagens } from '@prisma/client';
 import { FtiRepository } from './repository/fti-repository';
 import { getAllFtiDto } from './dto/get-all-fti.dto';
 
-
 @Injectable()
 export class FtiService implements FtiRepository {
   constructor(private prisma: PrismaService) {}
@@ -61,104 +60,103 @@ export class FtiService implements FtiRepository {
         qtd_cavidade: Number(qtd_cavidade),
         Homologacao: {
           create: {
-            user_created: {body:'luan maromba puxa 25 kg'},
+            user_created: { body: 'luan maromba puxa 25 kg' },
             user_homologation: '',
             statusId: 1,
             revisao: 0,
-            
-          }
+          },
         },
         Dimensao: {
           createMany: {
-            data: JSON.parse(Dimensao as any)
-          }
+            data: JSON.parse(Dimensao as any),
+          },
         },
         Estufagem: {
           createMany: {
-            data: JSON.parse(Estufagem as any)
-          }
+            data: JSON.parse(Estufagem as any),
+          },
         },
         DispositivoSeguranca: {
           createMany: {
-            data: JSON.parse(DispositivoSeguranca as any)
-          }
+            data: JSON.parse(DispositivoSeguranca as any),
+          },
         },
         RefrigeracaoMolde: {
           createMany: {
-            data: JSON.parse(RefrigeracaoMolde as any)
-          }
+            data: JSON.parse(RefrigeracaoMolde as any),
+          },
         },
         Cavidade: {
           createMany: {
-            data: JSON.parse(Cavidade as any)
-          }
+            data: JSON.parse(Cavidade as any),
+          },
         },
         AquecedorAgua: {
           create: {
-            check_aquecedor: AquecedorAgua as any
-          }
+            check_aquecedor: AquecedorAgua as any,
+          },
         },
         Resumo: {
           createMany: {
-            data: JSON.parse(Resumo as any)
-          }
+            data: JSON.parse(Resumo as any),
+          },
         },
         InfoGeraisRegulagem: {
           createMany: {
-            data: JSON.parse(InfoGeraisRegulagem as any)
-          }
+            data: JSON.parse(InfoGeraisRegulagem as any),
+          },
         },
         Tempos: {
           createMany: {
-            data: JSON.parse(Tempos as any)
-          }
+            data: JSON.parse(Tempos as any),
+          },
         },
         Pressoes: {
           createMany: {
-            data: JSON.parse(Pressoes as any)
-          }
+            data: JSON.parse(Pressoes as any),
+          },
         },
         Cursos: {
           createMany: {
-            data: JSON.parse(Cursos as any)
-          }  
+            data: JSON.parse(Cursos as any),
+          },
         },
         TemperaturaCilindro: {
           createMany: {
-            data: JSON.parse(TemperaturaCilindro as any)
-          }
+            data: JSON.parse(TemperaturaCilindro as any),
+          },
         },
         Dosador: {
           createMany: {
-            data: JSON.parse(Dosador as any)
-          }
+            data: JSON.parse(Dosador as any),
+          },
         },
         Injecao: {
           createMany: {
             data: {
-              injecao: Injecao
-            }
-          }
+              injecao: Injecao,
+            },
+          },
         },
         Recalque: {
           create: {
-            recalque: Recalque
-          }
+            recalque: Recalque,
+          },
         },
         Dosagem: {
-         create: {
-          dosagem: Dosagem
-         }
+          create: {
+            dosagem: Dosagem,
+          },
         },
         ProgramacaoMachos: {
           createMany: {
-            data: JSON.parse(ProgramacaoMachos as any)
-          }
+            data: JSON.parse(ProgramacaoMachos as any),
+          },
         },
         BicoCamaraQuente: {
           createMany: {
-            data: JSON.parse(BicoCamaraQuente as any)
-          }
+            data: JSON.parse(BicoCamaraQuente as any),
+          },
         },
         Sequenciador: {
           createMany: {

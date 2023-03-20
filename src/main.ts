@@ -11,6 +11,8 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
+  app.useGlobalPipes(new ValidationPipe());
+
   const config = new DocumentBuilder()
     .setTitle('FTI API')
     .setDescription('Made by @Tutilabs')
