@@ -3,7 +3,7 @@
 /node_modules
 /vdata
 /uploads
-.env
+/.env
 node_modules
 mysql_data
 # Logs
