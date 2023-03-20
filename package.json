@@ -6,7 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build && docker-compose up -d",
+    "auto:prod": "yarn && yarn add @nestjs/swagger  && yarn prisma generate && yarn build && yarn start:prod",
+    "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
