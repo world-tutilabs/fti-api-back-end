@@ -14,7 +14,7 @@ services:
       - ./mysql_data/:/var/lib/mysql # Adicionar em DockerIgnore
 
     networks:
-      - nw_fti
+      - nw_new_api_fti
   nest-api-fti-container:
     container_name: nest-api-fti-container
     build: .
@@ -30,7 +30,9 @@ services:
       # - ./nest-cli.json:/usr/src/api-node-fti/nest-cli.json 
       # - ./prisma:/usr/src/api-node-fti/prisma/
     networks:
-      - nw_fti   
+      - nw_new_api_fti   
 networks:
-  nw_fti:
+  nw_new_api_fti:
     driver: bridge
+    name: nw_new_api_fti
+    
