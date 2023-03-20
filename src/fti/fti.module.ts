@@ -1,10 +1,17 @@
 import { PrismaService } from '../prisma/prisma.service';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { FtiService } from './fti.service';
 import { FtiController } from './fti.controller';
+import { HttpModule } from '@nestjs/axios';
+import { ValidateTokenMiddleware } from './middlewares/validate-token.middleware';
 
 @Module({
+  imports: [HttpModule],
   controllers: [FtiController],
   providers: [FtiService, PrismaService],
 })
-export class FtiModule {}
+export class FtiModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(ValidateTokenMiddleware).forRoutes(FtiController);
+  }
+}
