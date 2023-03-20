@@ -21,9 +21,16 @@ export class FtiController {
   constructor(private readonly ftiService: FtiService) {}
 
   @Post('/create')
-  @UseInterceptors(AnyFilesInterceptor())
-  create(@Body() data: any) {
-    return this.ftiService.create(data)
+  @UseInterceptors(FileFieldsInterceptor(
+    [
+      { name: 'img_produto', maxCount: 1 },
+      { name: 'img_camara', maxCount: 1 },
+    ],
+    multerOptions,
+  ),)
+  create(@Body() data: CreateFtiDto , @UploadedFiles() files: any) {
+    const newData = Object.assign({}, data,{Images: {img_produto: files.img_produto[0].filename, img_camara: files.img_camara[0].filename}})
+   return this.ftiService.create(newData)
   }
 
   // @Get('em-aprovacao')

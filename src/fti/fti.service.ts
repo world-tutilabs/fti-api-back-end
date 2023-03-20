@@ -2,7 +2,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { CreateFtiDto } from './dto/create-fti.dto';
 import { UpdateFtiDto } from './dto/update-fti.dto';
-import { Fti } from '@prisma/client';
+import { Fti, Imagens } from '@prisma/client';
 import { FtiRepository } from './repository/fti-repository';
 import { getAllFtiDto } from './dto/get-all-fti.dto';
 
@@ -44,11 +44,10 @@ export class FtiService implements FtiRepository {
       Dosagem,
       ProgramacaoMachos,
       BicoCamaraQuente,
-      Sequenciador
+      Sequenciador,
+      Images
     } = data;
-    const teste = JSON.parse(ProgramacaoMachos as any)
-    console.log(teste.macho)
-    const result = await this.prisma.fti.create({
+    return await this.prisma.fti.create({
       data: {
         cliente,
         cod_molde,
@@ -165,31 +164,14 @@ export class FtiService implements FtiRepository {
           createMany: {
             data: JSON.parse(Sequenciador as any)
           }
+        },
+        Imagens: {
+          createMany: {
+            data: Images
+          }
         }
       }
     })
-    console.log(result)
-    // const teste = JSON.parse(Dimensao as any)
-    // console.log(teste.altura)
-    // return await this.prisma.fti.create({
-    //   data: {
-    //     cliente: data.cliente,
-    //     produto: data.produto,
-    //     cod_produto: data.cod_molde,
-    //     modelo: data.modelo,
-    //     maquina: data.maquina,
-    //     materia_prima: data.materia_prima,
-    //     cor: data.cor,
-    //     pigmento: data.pigmento,
-    //     cod_molde: data.cod_molde,
-    //     Dimensao: {
-    //       createMany: {
-    //         data: JSON.parse(Dimensao as any)
-    //       }
-    //     }
-    //   },
-    // });
-    return null
   }
 
   // async findAllEmAprovacao(): Promise<getAllFtiDto[]> {
