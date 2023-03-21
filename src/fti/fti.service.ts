@@ -1,6 +1,6 @@
 import { PrismaService } from '../prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
-import { CreateFtiDto } from './dto/create-fti.dto';
+import { CreateFtiDto } from './types/dto/create-fti.dto';
 import { Fti } from '@prisma/client';
 import { FtiRepository } from './repository/fti-repository';
 
