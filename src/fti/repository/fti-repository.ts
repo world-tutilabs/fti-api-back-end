@@ -1,4 +1,6 @@
-import { getAllFtiDto } from './../dto/get-all-fti.dto';
+import { Fti } from '@prisma/client';
+import { CreateFtiDto } from '../dto/create-fti.dto';
 export abstract class FtiRepository {
-  abstract findAll(statusId: number): Promise<getAllFtiDto[] | null>;
+  abstract create(data: CreateFtiDto): Promise<Fti>;
+  abstract findOne(id: number): Promise<Partial<Fti>>;
 }

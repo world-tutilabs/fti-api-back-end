@@ -1,17 +1,12 @@
 import { PrismaService } from '../prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { CreateFtiDto } from './dto/create-fti.dto';
-import { UpdateFtiDto } from './dto/update-fti.dto';
-import { Fti, Imagens } from '@prisma/client';
+import { Fti } from '@prisma/client';
 import { FtiRepository } from './repository/fti-repository';
-import { getAllFtiDto } from './dto/get-all-fti.dto';
 
 @Injectable()
 export class FtiService implements FtiRepository {
   constructor(private prisma: PrismaService) {}
-  findAll(statusId: number): Promise<getAllFtiDto[]> {
-    throw new Error('Method not implemented.');
-  }
 
   async create(data: CreateFtiDto): Promise<Fti> {
     const {
@@ -44,7 +39,7 @@ export class FtiService implements FtiRepository {
       ProgramacaoMachos,
       BicoCamaraQuente,
       Sequenciador,
-      Images
+      Images,
     } = data;
     return await this.prisma.fti.create({
       data: {
@@ -160,93 +155,192 @@ export class FtiService implements FtiRepository {
         },
         Sequenciador: {
           createMany: {
-            data: JSON.parse(Sequenciador as any)
-          }
+            data: JSON.parse(Sequenciador as any),
+          },
         },
         Imagens: {
           createMany: {
-            data: Images
-          }
-        }
-      }
-    })
+            data: Images,
+          },
+        },
+      },
+    });
   }
 
-  // async findAllEmAprovacao(): Promise<getAllFtiDto[]> {
-  //   return await this.prisma.fti.findMany({
-  //     where: { Homologacao: { every: { statusId: 1 } } },
-  //     select: {
-  //       id: true,
-  //       cod_molde: true,
-  //       cliente: true,
-  //       produto: true,
-  //       cod_produto: true,
-  //       createdAt: true,
-  //       modelo: true,
-  //       maquina: true,
-  //       materia_prima: true,
-  //       cor: true,
-  //       pigmento: true,
-  //       Homologacao: {
-  //         select: {
-  //           revisao: true,
-  //           Status: { select: { descricao: true } },
-  //           Avaliacao: {
-  //             select: {
-  //               nome: true,
-  //               Cargo: { select: { descricao: true } },
-  //               aprovado: true,
-  //               createdAt: true,
-  //             },
-  //           },
-  //         },
-  //       },
-  //     },
-  //   });
-  // }
-
-  // async findAllHomologadas(): Promise<getAllFtiDto[]> {
-  //   return await this.prisma.fti.findMany({
-  //     where: { Homologacao: { every: { statusId: 2 } } },
-  //     select: {
-  //       id: true,
-  //       cod_molde: true,
-  //       cliente: true,
-  //       produto: true,
-  //       cod_produto: true,
-  //       createdAt: true,
-  //       modelo: true,
-  //       maquina: true,
-  //       materia_prima: true,
-  //       cor: true,
-  //       pigmento: true,
-  //       Homologacao: {
-  //         select: {
-  //           revisao: true,
-  //           Status: { select: { descricao: true } },
-  //           Avaliacao: {
-  //             select: {
-  //               nome: true,
-  //               Cargo: { select: { descricao: true } },
-  //               aprovado: true,
-  //               createdAt: true,
-  //             },
-  //           },
-  //         },
-  //       },
-  //     },
-  //   });
-  // }
-
-  findOne(id: number) {
-    return `This action returns a #${id} fti`;
-  }
-
-  update(id: number, updateFtiDto: UpdateFtiDto) {
-    return `This action updates a #${id} fti`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} fti`;
+  async findOne(id: number): Promise<Partial<Fti>> {
+    return await this.prisma.fti.findFirst({
+      where: { id },
+      select: {
+        id: true,
+        produto: true,
+        cod_produto: true,
+        cod_molde: true,
+        cliente: true,
+        modelo: true,
+        maquina: true,
+        materia_prima: true,
+        pigmento: true,
+        cor: true,
+        qtd_cavidade: true,
+        createdAt: true,
+        updatedAt: true,
+        Homologacao: {
+          select: {
+            revisao: true,
+            user_created: true,
+            user_homologation: true,
+            Status: {
+              select: {
+                descricao: true,
+              },
+            },
+          },
+        },
+        AquecedorAgua: {
+          select: {
+            check_aquecedor: true,
+          },
+        },
+        BicoCamaraQuente: {
+          select: {
+            check_bico_camara_quente: true,
+            temperatura_programada: true,
+          },
+        },
+        Cavidade: {
+          select: {
+            cavidade: true,
+          },
+        },
+        Cursos: {
+          select: {
+            curso_abertura: true,
+            curso_descompressao: true,
+            tempo_recalque: true,
+            curso_avanco_extrator: true,
+            inicio_protecao_molde: true,
+          },
+        },
+        Dimensao: {
+          select: {
+            altura: true,
+            comprimento: true,
+            largura: true,
+            produto: true,
+          },
+        },
+        DispositivoSeguranca: {
+          select: {
+            check_dispositivo_seg: true,
+            sensor: true,
+            micro_sw: true,
+            fim_curso: true,
+          },
+        },
+        Dosador: {
+          select: {
+            check_dosador: true,
+            velocidade_dosagem: true,
+            tempo_dosagem: true,
+          },
+        },
+        Dosagem: {
+          select: {
+            dosagem: true,
+          },
+        },
+        Estufagem: {
+          select: {
+            check_estufagem: true,
+            temperatura_ini: true,
+            temperatura_final: true,
+            tempo: true,
+          },
+        },
+        Imagens: {
+          select: {
+            img_produto: true,
+            img_camara: true,
+          },
+        },
+        InfoGeraisRegulagem: {
+          select: {
+            bucha_injecao: true,
+            bico_injecao: true,
+            prog_injecao: true,
+            modo: true,
+            ciclo_total: true,
+            producao_horaria: true,
+          },
+        },
+        Injecao: {
+          select: {
+            injecao: true,
+          },
+        },
+        Pressoes: {
+          select: {
+            pressao_media: true,
+            pressao_travamento: true,
+            pressao_avanco: true,
+            pressao_recuo: true,
+            pressao_descompressao: true,
+            peso_galho: true,
+          },
+        },
+        ProgramacaoMachos: {
+          select: {
+            check_programacao_machos: true,
+            macho: true,
+          },
+        },
+        Recalque: {
+          select: {
+            recalque: true,
+          },
+        },
+        RefrigeracaoMolde: {
+          select: {
+            movel: true,
+            flutuante: true,
+            fixo: true,
+            gaveta: true,
+          },
+        },
+        Resumo: {
+          select: {
+            peso_total_cavidade: true,
+            peso_total_injecao: true,
+            peso_medio_bruto: true,
+            peso_medio_liquido: true,
+            peso_galho: true,
+          },
+        },
+        Sequenciador: {
+          select: {
+            check_sequenciador: true,
+            sequenciador: true,
+          },
+        },
+        TemperaturaCilindro: {
+          select: {
+            bico: true,
+            zona: true,
+          },
+        },
+        Tempos: {
+          select: {
+            tempo_fechamento: true,
+            tempo_injecao: true,
+            tempo_recalque: true,
+            tempo_resfriamento: true,
+            tempo_abertura_molde: true,
+            tempo_extracao: true,
+            tempo_retirada_remocao_peca: true,
+            reciclo_outros: true,
+          },
+        },
+      },
+    });
   }
 }
