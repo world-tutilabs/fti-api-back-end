@@ -4,7 +4,13 @@ import { ApiTags } from '@nestjs/swagger';
 import { FtiService } from './fti.service';
 import { CreateFtiDto } from './types/dto/create-fti.dto';
 import { UpdateFtiDto } from './types/dto/update-fti.dto';
-import { Body, Post, Patch, UploadedFiles } from '@nestjs/common/decorators';
+import {
+  Body,
+  Post,
+  Patch,
+  UploadedFiles,
+  Put,
+} from '@nestjs/common/decorators';
 import { FileFieldsInterceptor } from '@nestjs/platform-express/multer';
 import { multerOptions } from 'src/config/multer.config';
 import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception';
@@ -54,5 +60,10 @@ export class FtiController {
   )
   async upload(@UploadedFiles() files) {
     return files;
+  }
+
+  @Put('homologation')
+  homolog() {
+    return { res: 'from homologation end-point' };
   }
 }
