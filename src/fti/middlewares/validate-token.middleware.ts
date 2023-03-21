@@ -16,13 +16,12 @@ export class ValidateTokenMiddleware implements NestMiddleware {
     );
 
     const role = user.data.user.nivel_de_acesso.descricao;
-
-    if (!req.headers.authorization)
+    if (!req.headers.authorization){
       throw new HttpException('No Authorization Token', HttpStatus.FORBIDDEN);
-
-    if (role === 'eng_analista' || role === 'eng_admin' || role === 'eng')
+    }else if (role === 'eng_analista' || role === 'eng_admin' || role === 'eng') {
+      req.user = user.data
       next();
-    else
+    } else
       throw new HttpException(
         'Invalid Authorization Token',
         HttpStatus.FORBIDDEN,

@@ -2,13 +2,25 @@ import { PrismaService } from '../prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { CreateFtiDto } from './dto/create-fti.dto';
 import { UpdateFtiDto } from './dto/update-fti.dto';
-import { Fti, Imagens } from '@prisma/client';
+import { Fti } from '@prisma/client';
 import { FtiRepository } from './repository/fti-repository';
 import { getAllFtiDto } from './dto/get-all-fti.dto';
+import { HomologDto } from './dto/homolog-fti.dto';
 
 @Injectable()
 export class FtiService implements FtiRepository {
   constructor(private prisma: PrismaService) {}
+  async homolog(data: HomologDto): Promise<void> {
+    await this.prisma.homologacao.updateMany({
+      data: {
+        user_homologation: data.user,
+        statusId: Number(data.body.status)
+      },
+      where: {
+        ftiId: Number(data.params.id)
+      }
+    })
+  }
   findAll(statusId: number): Promise<getAllFtiDto[]> {
     throw new Error('Method not implemented.');
   }

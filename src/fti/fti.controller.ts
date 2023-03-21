@@ -1,19 +1,19 @@
-import { FindAllParams } from './types/params/find-all-params';
 import {
   Controller,
   Get,
   Param,
-  UseInterceptors
+  UseInterceptors,
+  Req
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FtiService } from './fti.service';
 import { CreateFtiDto } from './dto/create-fti.dto';
 import { UpdateFtiDto } from './dto/update-fti.dto';
-import { ApiBody } from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Body, Post, UploadedFile, Patch, UploadedFiles } from '@nestjs/common/decorators';
-import { AnyFilesInterceptor, FileFieldsInterceptor } from '@nestjs/platform-express/multer';
+import { Body, Post, Patch, UploadedFiles, Put } from '@nestjs/common/decorators';
+import { FileFieldsInterceptor } from '@nestjs/platform-express/multer';
 import { multerOptions } from 'src/config/multer.config';
+import { ApiTags } from '@nestjs/swagger';
+import { HomologDto } from './dto/homolog-fti.dto';
+import { ValidateTokenAdminMiddleware } from './middlewares/validate-token-admin.middleware';
 
 @Controller('fti')
 @ApiTags('FTI')
@@ -65,5 +65,10 @@ export class FtiController {
   )
   async upload(@UploadedFiles() files) {
     return files;
+  }
+
+  @Put('homologation/:id')
+  async homologation(@Req() data: HomologDto) {
+    return this.ftiService.homolog(data)
   }
 }
