@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { Max, Min, IsNumber } from 'class-validator';
 
-export class FindAllParams {
+export class FindAllParam {
   @IsNumber()
   @Min(1)
   @Max(3)

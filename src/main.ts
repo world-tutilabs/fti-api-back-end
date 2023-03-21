@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { SwaggerTheme } from 'swagger-themes';
@@ -30,6 +30,10 @@ async function bootstrap() {
 
   SwaggerModule.setup('api', app, document, options);
 
-  await app.listen(process.env.API_PORT);
+  await app.listen(process.env.PORT);
+  Logger.verbose(`🚀 Listening on PORT ${process.env.API_PORT}`);
+  Logger.verbose(
+    `📄 Take a look at the docs http://localhost:${process.env.API_PORT}/api`,
+  );
 }
 bootstrap();
