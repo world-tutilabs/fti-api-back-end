@@ -62,7 +62,7 @@ export class FtiController {
     return files;
   }
 
-  @Put('homologation')
+  @Put('homologation/:id')
   homolog() {
     return { res: 'from homologation end-point' };
   }
