@@ -21,6 +21,11 @@ import { Fti } from '@prisma/client';
 export class FtiController {
   constructor(private readonly ftiService: FtiService) {}
 
+  @Get()
+  async listOnApproval() {
+    return await this.ftiService.listOnApproval();
+  }
+
   @Post('create')
   @UseInterceptors(
     FileFieldsInterceptor(

@@ -8,6 +8,18 @@ import { FtiRepository } from './repository/fti-repository';
 export class FtiService implements FtiRepository {
   constructor(private prisma: PrismaService) {}
 
+  async listOnApproval(): Promise<Partial<Fti[]>> {
+    return await this.prisma.fti.findMany({
+      where: {
+        Homologacao: {
+          every: {
+            statusId: 1,
+          },
+        },
+      },
+    });
+  }
+
   async create(data: CreateFtiDto): Promise<Fti> {
     const {
       produto,
