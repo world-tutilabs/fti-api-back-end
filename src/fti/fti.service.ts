@@ -343,4 +343,13 @@ export class FtiService implements FtiRepository {
       },
     });
   }
+
+  async hideOne(id: number): Promise<Partial<Fti>> {
+    return await this.prisma.homologacao.update({
+      where: { id },
+      data: {
+        statusId: 3,
+      },
+    });
+  }
 }

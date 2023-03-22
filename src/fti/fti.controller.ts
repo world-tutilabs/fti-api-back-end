@@ -3,24 +3,25 @@ import { Controller, Get, Param, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { FtiService } from './fti.service';
 import { CreateFtiDto } from './types/dto/create-fti.dto';
-import { UpdateFtiDto } from './types/dto/update-fti.dto';
 import {
   Body,
   Post,
-  Patch,
   UploadedFiles,
   Put,
+  Patch,
+  HttpCode,
 } from '@nestjs/common/decorators';
 import { FileFieldsInterceptor } from '@nestjs/platform-express/multer';
 import { multerOptions } from 'src/config/multer.config';
 import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception';
+import { Fti } from '@prisma/client';
 
 @Controller('fti')
 @ApiTags('FTI')
 export class FtiController {
   constructor(private readonly ftiService: FtiService) {}
 
-  @Post('/create')
+  @Post('create')
   @UseInterceptors(
     FileFieldsInterceptor(
       [
@@ -30,7 +31,10 @@ export class FtiController {
       multerOptions,
     ),
   )
-  create(@Body() data: CreateFtiDto, @UploadedFiles() files: any) {
+  create(
+    @Body() data: CreateFtiDto,
+    @UploadedFiles() files: any,
+  ): Promise<Partial<Fti>> {
     const newData = Object.assign({}, data, {
       Images: {
         img_produto: files.img_produto[0].filename,
@@ -41,8 +45,9 @@ export class FtiController {
   }
 
   @Get(':id')
-  async findOne(@Param() { id }: FindByIdParam) {
+  async findOne(@Param() { id }: FindByIdParam): Promise<Partial<Fti>> {
     const result = await this.ftiService.findOne(+id);
+
     if (!result) throw new NotFoundException(`FTI ${id} Not Found`);
 
     return result;
@@ -65,5 +70,14 @@ export class FtiController {
   @Put('homologation')
   homolog() {
     return { res: 'from homologation end-point' };
+  }
+
+  @Patch('hide/:id')
+  @HttpCode(204)
+  async hideOne(@Param() { id }: FindByIdParam) {
+    const result = await this.ftiService.findOne(+id);
+    if (!result) throw new NotFoundException(`id ${id} not found`);
+
+    return this.ftiService.hideOne(+id);
   }
 }
