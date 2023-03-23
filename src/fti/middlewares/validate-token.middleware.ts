@@ -9,8 +9,6 @@ import {
 @Injectable()
 export class ValidateTokenMiddleware implements NestMiddleware {
   async use(req: any, res: any, next: () => void) {
-    console.log('ValidateTokenMiddleware');
-
     const user = await httpUserSystem.post(
       '/session/verify',
       {},

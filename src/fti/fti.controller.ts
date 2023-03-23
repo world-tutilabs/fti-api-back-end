@@ -1,3 +1,4 @@
+import { FindByStatusIdParam } from './types/params/find-by-status';
 import { FindByIdParam } from './types/params/find-by-id';
 import { Controller, Get, Param, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -21,9 +22,9 @@ import { Fti } from '@prisma/client';
 export class FtiController {
   constructor(private readonly ftiService: FtiService) {}
 
-  @Get()
-  async listOnApproval() {
-    return await this.ftiService.listOnApproval();
+  @Get('list/:id')
+  async listOnApproval(@Param() { id }: FindByStatusIdParam) {
+    return await this.ftiService.listAllByStatus(+id);
   }
 
   @Post('create')
