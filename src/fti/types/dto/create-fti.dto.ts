@@ -1,3 +1,4 @@
+import { ApiHideProperty } from '@nestjs/swagger';
 import {
   Fti,
   Homologacao,
@@ -23,9 +24,10 @@ import {
   Tempos,
 } from '@prisma/client';
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateFtiDto implements Fti {
+  @ApiHideProperty()
   id: number;
   statusId: number;
   @IsString()
@@ -59,7 +61,9 @@ export class CreateFtiDto implements Fti {
   @IsNotEmpty()
   @Type(() => Number)
   qtd_cavidade: number;
+  @ApiHideProperty()
   createdAt: Date;
+  @ApiHideProperty()
   updatedAt: Date;
   Homologacao: CreateHomologacaoDto;
   @IsNotEmpty()

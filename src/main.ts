@@ -11,13 +11,12 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
-  app.useGlobalPipes(new ValidationPipe());
-
   const config = new DocumentBuilder()
     .setTitle('FTI API')
     .setDescription('Made by @Tutilabs')
     .setVersion('1.0')
     .addTag('FTI')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   const theme = new SwaggerTheme('v3');

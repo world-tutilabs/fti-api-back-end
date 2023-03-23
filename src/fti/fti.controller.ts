@@ -1,7 +1,7 @@
 import { FindByStatusIdParam } from './types/params/find-by-status';
 import { FindByIdParam } from './types/params/find-by-id';
 import { Controller, Get, Param, UseInterceptors } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { FtiService } from './fti.service';
 import { CreateFtiDto } from './types/dto/create-fti.dto';
 import {
@@ -18,11 +18,12 @@ import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception
 import { Fti } from '@prisma/client';
 
 @Controller('fti')
+@ApiBearerAuth()
 @ApiTags('FTI')
 export class FtiController {
   constructor(private readonly ftiService: FtiService) {}
 
-  @Get('list/:id')
+  @Get('list/:statusId')
   async listOnApproval(@Param() { id }: FindByStatusIdParam) {
     return await this.ftiService.listAllByStatus(+id);
   }
