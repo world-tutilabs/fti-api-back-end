@@ -29,6 +29,7 @@ import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 export class CreateFtiDto implements Fti {
   @ApiHideProperty()
   id: number;
+  @ApiHideProperty()
   statusId: number;
   @IsString()
   @IsNotEmpty()
@@ -105,6 +106,8 @@ export class CreateFtiDto implements Fti {
   TemperaturaCilindro: CreateTemperaturaCilindroDto;
   @IsNotEmpty()
   Tempos: CreateTemposDto;
+  img_produto: any;
+  img_camara: any;
 }
 
 type CreateHomologacaoDto = Homologacao;

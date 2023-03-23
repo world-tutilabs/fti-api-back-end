@@ -1,7 +1,7 @@
 import { FindByStatusIdParam } from './types/params/find-by-status';
 import { FindByIdParam } from './types/params/find-by-id';
 import { Controller, Get, Param, UseInterceptors } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FtiService } from './fti.service';
 import { CreateFtiDto } from './types/dto/create-fti.dto';
 import {
@@ -23,12 +23,13 @@ import { Fti } from '@prisma/client';
 export class FtiController {
   constructor(private readonly ftiService: FtiService) {}
 
-  @Get('list/:statusId')
+  @Get('list/:id')
   async listOnApproval(@Param() { id }: FindByStatusIdParam) {
     return await this.ftiService.listAllByStatus(+id);
   }
 
   @Post('create')
+  @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileFieldsInterceptor(
       [
