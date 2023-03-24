@@ -307,8 +307,8 @@ model Tempos {
 }
 
 enum AquecedorAgua_check_aquecedor {
-  Y
-  N
+  true
+  false
 }
 
 enum BicoCamaraQuente_check_bico_camara_quente {
@@ -317,23 +317,23 @@ enum BicoCamaraQuente_check_bico_camara_quente {
 }
 
 enum DispositivoSeguranca_check_dispositivo_seg {
-  Y
-  N
+  true
+  false
 }
 
 enum Dosador_check_dosador {
-  Y
-  N
+  true
+  false
 }
 
 enum Estufagem_check_estufagem {
-  Y
-  N
+  true
+  false
 }
 
 enum Sequenciador_check_sequenciador {
-  Y
-  N
+  true
+  false
 }
 
 enum BicoCamaraQuente_check_tipos_temperatura {
@@ -342,18 +342,18 @@ enum BicoCamaraQuente_check_tipos_temperatura {
 }
 
 enum DispositivoSeguranca_sensor {
-  Y
-  N
+  true
+  false
 }
 
 enum DispositivoSeguranca_micro_sw {
-  Y
-  N
+  true
+  false
 }
 
 enum DispositivoSeguranca_fim_curso {
-  Y
-  N
+  true
+  false
 }
 
 enum ProgramacaoMachos_check_programacao_machos {
