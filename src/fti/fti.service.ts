@@ -2,9 +2,9 @@ import { PrismaService } from '../prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { Fti } from '@prisma/client';
 import { FtiRepository } from './repository/fti-repository';
-import { HomologDto } from './types/dto/homolog-fti.dto';
 import { getAllFtiDto } from './types/dto/get-all-fti.dto';
 import { CreateFtiDto } from './types/dto/create-fti.dto';
+import { HomologDto } from './types/dto/homolog-fti.dto';
 
 @Injectable()
 export class FtiService implements FtiRepository {
@@ -26,6 +26,7 @@ export class FtiService implements FtiRepository {
 
   async create(data: CreateFtiDto): Promise<Fti> {
     const {
+      user,
       produto,
       cod_produto,
       cod_molde,
@@ -71,8 +72,7 @@ export class FtiService implements FtiRepository {
         qtd_cavidade: Number(qtd_cavidade),
         Homologacao: {
           create: {
-            user_created: { body: 'luan maromba puxa 25 kg' },
-            user_homologation: '',
+            user_created: user,
             statusId: 1,
             revisao: 0,
           },
@@ -341,7 +341,13 @@ export class FtiService implements FtiRepository {
         TemperaturaCilindro: {
           select: {
             bico: true,
-            zona: true,
+            zona_1: true,
+            zona_2: true,
+            zona_3: true,
+            zona_4: true,
+            zona_5: true,
+            zona_6: true,
+            zona_7: true,
           },
         },
         Tempos: {

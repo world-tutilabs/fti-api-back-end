@@ -26,6 +26,7 @@ import { Type } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateFtiDto implements Fti {
+  user: any;
   id: number;
   statusId: number;
   @IsString()

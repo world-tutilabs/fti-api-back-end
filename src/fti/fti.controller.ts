@@ -7,18 +7,18 @@ import {
   NotFoundException
 } from '@nestjs/common';
 import { FtiService } from './fti.service';
-import { Body, Post, Patch, UploadedFiles, Put } from '@nestjs/common/decorators';
+import { Body, Post, UploadedFiles, Put } from '@nestjs/common/decorators';
 import { FileFieldsInterceptor } from '@nestjs/platform-express/multer';
 import { multerOptions } from 'src/config/multer.config';
 import { ApiTags } from '@nestjs/swagger';
-import { HomologDto } from './types/dto/homolog-fti.dto';
 import { CreateFtiDto } from './types/dto/create-fti.dto';
 import { FindByIdParam } from './types/params/find-by-id';
+import { HomologDto } from './types/dto/homolog-fti.dto';
 
 @Controller('fti')
 @ApiTags('FTI')
 export class FtiController {
-  constructor(private readonly ftiService: FtiService) {}
+  constructor(private readonly ftiService: FtiService, ) {}
 
   @Post('/create')
   @UseInterceptors(
@@ -30,14 +30,15 @@ export class FtiController {
       multerOptions,
     ),
   )
-  create(@Body() data: CreateFtiDto, @UploadedFiles() files: any) {
+  create(@Body() data: CreateFtiDto, @UploadedFiles() files: any, @Req() user: any) {
     const newData = Object.assign({}, data, {
       Images: {
         img_produto: files.img_produto[0].filename,
         img_camara: files.img_camara[0].filename,
       },
+      user: user.user.user
     });
-    return this.ftiService.create(newData);
+      return this.ftiService.create(newData);
   }
 
   @Get(':id')
@@ -64,6 +65,7 @@ export class FtiController {
 
   @Put('homologation/:id')
   async homologation(@Req() data: HomologDto) {
+    
     return this.ftiService.homolog(data)
   }
 }
