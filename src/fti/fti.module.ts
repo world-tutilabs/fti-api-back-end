@@ -21,9 +21,12 @@ export class FtiModule implements NestModule {
       .apply(ValidateTokenMiddleware)
       .exclude({ path: 'fti/homologation/:id', method: RequestMethod.PUT })
       .forRoutes(FtiController);
-    consumer.apply(ValidateHomologMiddleware).forRoutes({
-      path: 'fti/homologation/:id',
-      method: RequestMethod.PUT,
-    });
+    consumer.apply(ValidateHomologMiddleware).forRoutes(
+      {
+        path: 'fti/homologation',
+        method: RequestMethod.PUT,
+      },
+      { path: 'fti/hide/:id', method: RequestMethod.PATCH },
+    );
   }
 }

@@ -24,6 +24,16 @@ export class FtiService implements FtiRepository {
     throw new Error('Method not implemented.');
   }
 
+  async listAllByStatus(statusId: number): Promise<Partial<Fti[]>> {
+    return await this.prisma.fti.findMany({
+      where: {
+        Homologacao: {
+          every: { statusId },
+        },
+      },
+    });
+  }
+
   async create(data: CreateFtiDto): Promise<Fti> {
     const {
       user,
@@ -362,6 +372,15 @@ export class FtiService implements FtiRepository {
             reciclo_outros: true,
           },
         },
+      },
+    });
+  }
+
+  async hideOne(id: number): Promise<Partial<Fti>> {
+    return await this.prisma.homologacao.update({
+      where: { id },
+      data: {
+        statusId: 3,
       },
     });
   }

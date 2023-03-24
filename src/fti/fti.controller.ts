@@ -1,26 +1,37 @@
-import {
-  Controller,
-  Get,
-  Param,
-  UseInterceptors,
-  Req,
-  NotFoundException
-} from '@nestjs/common';
+import { FindByStatusIdParam } from './types/params/find-by-status';
+import { FindByIdParam } from './types/params/find-by-id';
+import { Controller, Get, Param, UseInterceptors } from '@nestjs/common';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FtiService } from './fti.service';
-import { Body, Post, UploadedFiles, Put } from '@nestjs/common/decorators';
+import { CreateFtiDto } from './types/dto/create-fti.dto';
+import {
+  Body,
+  Post,
+  UploadedFiles,
+  Put,
+  Patch,
+  HttpCode,
+  Req
+} from '@nestjs/common/decorators';
 import { FileFieldsInterceptor } from '@nestjs/platform-express/multer';
 import { multerOptions } from 'src/config/multer.config';
-import { ApiTags } from '@nestjs/swagger';
-import { CreateFtiDto } from './types/dto/create-fti.dto';
-import { FindByIdParam } from './types/params/find-by-id';
+import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception';
+import { Fti } from '@prisma/client';
 import { HomologDto } from './types/dto/homolog-fti.dto';
 
 @Controller('fti')
+@ApiBearerAuth()
 @ApiTags('FTI')
 export class FtiController {
   constructor(private readonly ftiService: FtiService, ) {}
 
-  @Post('/create')
+  @Get('list/:id')
+  async listOnApproval(@Param() { id }: FindByStatusIdParam) {
+    return await this.ftiService.listAllByStatus(+id);
+  }
+
+  @Post('create')
+  @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileFieldsInterceptor(
       [
@@ -42,8 +53,9 @@ export class FtiController {
   }
 
   @Get(':id')
-  async findOne(@Param() { id }: FindByIdParam) {
+  async findOne(@Param() { id }: FindByIdParam): Promise<Partial<Fti>> {
     const result = await this.ftiService.findOne(+id);
+
     if (!result) throw new NotFoundException(`FTI ${id} Not Found`);
 
     return result;
@@ -67,5 +79,14 @@ export class FtiController {
   async homologation(@Req() data: HomologDto) {
     
     return this.ftiService.homolog(data)
+  }
+
+  @Patch('hide/:id')
+  @HttpCode(204)
+  async hideOne(@Param() { id }: FindByIdParam) {
+    const result = await this.ftiService.findOne(+id);
+    if (!result) throw new NotFoundException(`id ${id} not found`);
+
+    return this.ftiService.hideOne(+id);
   }
 }
