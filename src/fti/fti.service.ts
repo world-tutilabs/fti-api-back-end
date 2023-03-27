@@ -76,6 +76,7 @@ export class FtiService implements FtiRepository {
       Sequenciador,
       Images,
     } = data;
+
     return await this.prisma.fti.create({
       data: {
         cliente,
