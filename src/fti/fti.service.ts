@@ -5,10 +5,17 @@ import { FtiRepository } from './repository/fti-repository';
 import { getAllFtiDto } from './types/dto/get-all-fti.dto';
 import { CreateFtiDto } from './types/dto/create-fti.dto';
 import { HomologDto } from './types/dto/homolog-fti.dto';
+import { VersioningParam } from './types/params/versioning';
 
 @Injectable()
 export class FtiService implements FtiRepository {
   constructor(private prisma: PrismaService) {}
+  async versioning(data: VersioningParam): Promise<void> {
+    const {id, mold} = data;
+    console.log(id, mold)
+    //await this.prisma.fti
+    //throw new Error('Method not implemented.');
+  }
   async homolog(data: HomologDto): Promise<void> {
     await this.prisma.homologacao.updateMany({
       data: {

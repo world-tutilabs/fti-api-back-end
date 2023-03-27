@@ -1,3 +1,4 @@
+import { VersioningParam } from './types/params/versioning';
 import { FindByStatusIdParam } from './types/params/find-by-status';
 import { FindByIdParam } from './types/params/find-by-id';
 import { Controller, Get, Param, UseInterceptors } from '@nestjs/common';
@@ -88,5 +89,20 @@ export class FtiController {
     if (!result) throw new NotFoundException(`id ${id} not found`);
 
     return this.ftiService.hideOne(+id);
+  }
+  @Post('versioning/:id&&:mold')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [
+        { name: 'img_produto', maxCount: 1 },
+        { name: 'img_camara', maxCount: 1 },
+      ],
+      multerOptions,
+    ),
+  )
+  async versioning(@Param() {id, mold}: VersioningParam, @Body() data: CreateFtiDto, @UploadedFiles() files: any, @Req() user: any) {
+    const newData = {id, mold, body: data, files, user}
+    this.ftiService.versioning(newData)
   }
 }
