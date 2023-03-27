@@ -74,7 +74,7 @@ export class FtiController {
   async upload(@UploadedFiles() files) {
     return files;
   }
-
+ 
   @Put('homologation/:id')
   async homologation(@Req() data: HomologDto) {
     
