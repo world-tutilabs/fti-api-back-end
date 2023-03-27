@@ -58,10 +58,8 @@ export class CreateFtiDto implements Fti {
   @IsString()
   @IsNotEmpty()
   cor: string;
-  @IsNumber()
   @IsNotEmpty()
-  @Type(() => Number)
-  qtd_cavidade: number;
+  qtd_cavidade: string;
   @ApiHideProperty()
   createdAt: Date;
   @ApiHideProperty()

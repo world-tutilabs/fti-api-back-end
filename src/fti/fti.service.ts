@@ -11,8 +11,9 @@ import { VersioningParam } from './types/params/versioning';
 export class FtiService implements FtiRepository {
   constructor(private prisma: PrismaService) {}
   async versioning(data: VersioningParam): Promise<void> {
-    const {id, mold} = data;
-    console.log(id, mold)
+    const {id, mold, body, files} = data;
+    if (!files.img_produto || files.img_camara)
+    console.log(files)
     //await this.prisma.fti
     //throw new Error('Method not implemented.');
   }
@@ -86,7 +87,7 @@ export class FtiService implements FtiRepository {
         modelo,
         pigmento,
         produto,
-        qtd_cavidade: Number(qtd_cavidade),
+        qtd_cavidade: qtd_cavidade,
         Homologacao: {
           create: {
             user_created: user,
