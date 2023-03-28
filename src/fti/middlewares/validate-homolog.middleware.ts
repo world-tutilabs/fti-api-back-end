@@ -19,12 +19,14 @@ export class ValidateHomologMiddleware implements NestMiddleware {
         { headers: { Authorization: req.headers.authorization } },
       );
       const role = user.data.user.nivel_de_acesso.descricao;
-    if (role === 'eng_admin') next();
-    else
-      throw new HttpException(
-        'Invalid Authorization Token',
-        HttpStatus.FORBIDDEN,
-      );
+      if (role === 'eng_admin') {
+        req.user = user.data;
+        next();
+      } else
+        throw new HttpException(
+          'Invalid Authorization Token',
+          HttpStatus.FORBIDDEN,
+        );
     } catch (error) {
       throw new HttpException(
         'UNAUTHORIZED Authorization Token',
