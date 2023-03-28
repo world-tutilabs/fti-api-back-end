@@ -1,4 +1,4 @@
-import { ApiHideProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import {
   Fti,
   Homologacao,
@@ -24,13 +24,17 @@ import {
   Tempos,
 } from '@prisma/client';
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  ValidateNested,
+  IsJSON,
+} from 'class-validator';
 
-export class CreateFtiDto implements Fti {
-  user: any;
-  id: number;
+export class CreateFtiDto implements Partial<Fti> {
   @ApiHideProperty()
-  statusId: number;
+  user: any;
   @IsString()
   @IsNotEmpty()
   produto: string;
@@ -63,50 +67,67 @@ export class CreateFtiDto implements Fti {
   @Type(() => Number)
   qtd_cavidade: number;
   @ApiHideProperty()
-  createdAt: Date;
-  @ApiHideProperty()
-  updatedAt: Date;
   Homologacao: CreateHomologacaoDto;
-  @IsNotEmpty()
+  @IsString()
   AquecedorAgua: CreateAquecedorAguaDto;
+  @IsJSON()
   @IsNotEmpty()
   BicoCamaraQuente: CreateBicoCamaraQuenteDto;
+  @IsJSON()
   @IsNotEmpty()
   Cavidade: CreateCavidadeDto;
+  @IsJSON()
   @IsNotEmpty()
   Cursos: CreateCursosDto;
+  @IsJSON()
   @IsNotEmpty()
   Dimensao: CreateDimensaoDto;
+  @IsJSON()
   @IsNotEmpty()
   DispositivoSeguranca: CreateDispositivoSeguranca;
+  @IsJSON()
   @IsNotEmpty()
   Dosador: CreateDosadorDto;
+  @IsJSON()
   @IsNotEmpty()
   Dosagem: CreateDosagemDto;
+  @IsJSON()
   @IsNotEmpty()
   Estufagem: CreateEstufagemDto;
+  @ApiHideProperty()
   Images: CreateImagensDto;
+  @IsJSON()
   @IsNotEmpty()
   InfoGeraisRegulagem: CreateInfoGeraisRegulagemDto;
+  @IsJSON()
   @IsNotEmpty()
   Injecao: CreateInjecaoDto;
+  @IsJSON()
   @IsNotEmpty()
   Pressoes: CreatePressoesDto;
+  @IsJSON()
   @IsNotEmpty()
   ProgramacaoMachos: CreateProgramacaoMachosDto;
   @IsNotEmpty()
   Recalque: CreateRecalqueDto;
+  @IsJSON()
   @IsNotEmpty()
   RefrigeracaoMolde: CreateRefrigeracaoMoldeDto;
+  @IsJSON()
   @IsNotEmpty()
   Resumo: CreateResumoDto;
+  @IsJSON()
   @IsNotEmpty()
   Sequenciador: CreateSequenciadorDto;
+  @IsJSON()
   @IsNotEmpty()
   TemperaturaCilindro: CreateTemperaturaCilindroDto;
+  @IsJSON()
   @IsNotEmpty()
   Tempos: CreateTemposDto;
+  @ApiProperty({ type: 'string', format: 'binary', required: true })
   img_produto: any;
+  @ApiProperty({ type: 'string', format: 'binary', required: true })
   img_camara: any;
 }
 
