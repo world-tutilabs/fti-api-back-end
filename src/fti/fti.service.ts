@@ -2,33 +2,73 @@ import { PrismaService } from '../prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { Fti } from '@prisma/client';
 import { FtiRepository } from './repository/fti-repository';
-import { getAllFtiDto } from './types/dto/get-all-fti.dto';
-import { CreateFtiDto } from './types/dto/create-fti.dto';
-import { HomologDto } from './types/dto/homolog-fti.dto';
+import { CreateFtiDto, HomologDto } from './types';
 
 @Injectable()
 export class FtiService implements FtiRepository {
   constructor(private prisma: PrismaService) {}
-  async homolog(data: HomologDto): Promise<void> {
-    await this.prisma.homologacao.updateMany({
-      data: {
-        user_homologation: data.user,
-        statusId: Number(data.body.status)
-      },
+  async history(molde: string): Promise<Partial<Fti>[]> {
+    return await this.prisma.fti.findMany({
       where: {
-        ftiId: Number(data.params.id)
-      }
-    })
-  }
-  findAll(statusId: number): Promise<getAllFtiDto[]> {
-    throw new Error('Method not implemented.');
+        AND: [
+          { cod_molde: molde },
+          { Homologacao: { every: { statusId: 4 } } },
+        ],
+      },
+
+      select: {
+        id: true,
+        cod_molde: true,
+        produto: true,
+        updatedAt: true,
+        maquina: true,
+        Homologacao: {
+          select: {
+            revisao: true,
+          },
+        },
+      },
+    });
   }
 
-  async listAllByStatus(statusId: number): Promise<Partial<Fti[]>> {
+  async homolog(id: number, user: HomologDto): Promise<void> {
+    await this.prisma.homologacao.updateMany({
+      data: {
+        user_homologation: user.user,
+        statusId: 2,
+      },
+      where: {
+        ftiId: id,
+      },
+    });
+  }
+
+  async listAllByStatus(statusId: number): Promise<Partial<Fti>[]> {
     return await this.prisma.fti.findMany({
       where: {
         Homologacao: {
           every: { statusId },
+        },
+      },
+      select: {
+        id: true,
+        cod_molde: true,
+        cliente: true,
+        produto: true,
+        cod_produto: true,
+        updatedAt: true,
+        createdAt: true,
+        modelo: true,
+        materia_prima: true,
+        cor: true,
+        pigmento: true,
+        Homologacao: {
+          select: {
+            revisao: true,
+            Status: {
+              select: { descricao: true },
+            },
+          },
         },
       },
     });
