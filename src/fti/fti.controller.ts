@@ -90,7 +90,7 @@ export class FtiController {
 
     return this.ftiService.hideOne(+id);
   }
-  @Post('versioning/:id&&:mold')
+  @Post('versioning/:mold&&:product')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileFieldsInterceptor(
@@ -101,8 +101,10 @@ export class FtiController {
       multerOptions,
     ),
   )
-  async versioning(@Param() {id, mold}: VersioningParam, @Body() data: CreateFtiDto, @UploadedFiles() files: any, @Req() user: any) {
-    const newData = {id, mold, body: data, files, user}
-    this.ftiService.versioning(newData)
+  async versioning(@Param() {mold, product}: VersioningParam, @Body() data: CreateFtiDto, @UploadedFiles() files: any, @Req() user: any) {
+      const newData = {mold,product , body: data, files, user}
+      this.ftiService.versioning(newData)
+    
+   
   }
 }

@@ -11,9 +11,27 @@ import { VersioningParam } from './types/params/versioning';
 export class FtiService implements FtiRepository {
   constructor(private prisma: PrismaService) {}
   async versioning(data: VersioningParam): Promise<void> {
-    const {id, mold, body, files} = data;
-    if (!files.img_produto || files.img_camara)
-    console.log(files)
+    const findByFtiPresent = await this.prisma.fti.findFirst({
+      orderBy: {
+        id: 'desc'
+      },
+      take: 1,
+      where: {
+      AND: {
+        cod_molde: data.mold,
+        cod_produto: data.product
+      }
+      }
+    })
+    await this.prisma.homologacao.update({
+      data: {
+        statusId: 4
+      },
+      where: {
+        id: findByFtiPresent.id
+      }
+    })
+    
     //await this.prisma.fti
     //throw new Error('Method not implemented.');
   }
