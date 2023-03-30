@@ -41,10 +41,11 @@ export class FtiService implements FtiRepository {
       ProgramacaoMachos,
       BicoCamaraQuente,
       Sequenciador,
-      Images,
-    } = data.body;
-    console.log(data.body)
-      
+    } = data.body;  
+    const images = {
+      img_produto: data.files.img_produto ? data.files.img_produto[0].filename : data.body.img_produto,
+      img_camara: data.files.img_camara ? data.files.img_camara[0].filename : data.body.img_camara,
+    }
     const findByFtiPresent = await this.prisma.fti.findFirst({
       include: {
         Homologacao: true
@@ -193,7 +194,7 @@ export class FtiService implements FtiRepository {
         },
         Imagens: {
           createMany: {
-            data: Images ? Images : {img_produto: data.body.img_produto, img_camara: data.body.img_camara},
+            data: images,
           },
         },
       },

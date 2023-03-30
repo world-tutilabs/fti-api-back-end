@@ -43,25 +43,15 @@ export class FtiController {
     ),
   )
   create(@Body() data: CreateFtiDto, @UploadedFiles() files: any, @Req() user: any) {
-    let newData: any;
-    if(files.img_produto || files.img_camara) {
-      newData = Object.assign({}, data, {
+      const newData = Object.assign({}, data, {
         Images: {
-          img_produto: files.img_produto[0].filename,
-          img_camara: files.img_camara[0].filename,
+          img_produto: files.img_produto ? files.img_produto[0].filename : null,
+          img_camara: files.img_camara ? files.img_camara[0].filename : null,
         },
         user: user.user.user
       });
-    } else {
-      newData = Object.assign({}, data, {
-        user: user.user.user
-      });
-    }
-    
-    
       return this.ftiService.create(newData);
-  }
-
+    }
   @Get(':id')
   async findOne(@Param() { id }: FindByIdParam): Promise<Partial<Fti>> {
     const result = await this.ftiService.findOne(+id);
@@ -112,9 +102,6 @@ export class FtiController {
   )
   async versioning(@Param() {mold, product}: VersioningParam, @Body() data: CreateFtiDto, @UploadedFiles() files: any, @Req() user: any) {
       const newData = {mold,product , body: data, files, user}
-      const resp = await this.ftiService.versioning(newData)
-      console.log('resp',resp)
-    
-   
+      await this.ftiService.versioning(newData)
   }
 }
