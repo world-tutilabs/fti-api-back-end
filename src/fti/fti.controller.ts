@@ -103,7 +103,8 @@ export class FtiController {
   )
   async versioning(@Param() {mold, product}: VersioningParam, @Body() data: CreateFtiDto, @UploadedFiles() files: any, @Req() user: any) {
       const newData = {mold,product , body: data, files, user}
-      this.ftiService.versioning(newData)
+      const resp = await this.ftiService.versioning(newData)
+      console.log('resp',resp)
     
    
   }
