@@ -336,11 +336,6 @@ enum Sequenciador_check_sequenciador {
   false
 }
 
-enum BicoCamaraQuente_check_tipos_temperatura {
-  k
-  j
-}
-
 enum DispositivoSeguranca_sensor {
   true
   false
@@ -369,4 +364,9 @@ enum ProgramacaoMachos_check_posicao {
 enum ProgramacaoMachos_check_tempo {
   true
   false
+}
+
+enum BicoCamaraQuente_check_tipos_temperatura {
+  K
+  J
 }

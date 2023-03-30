@@ -43,13 +43,22 @@ export class FtiController {
     ),
   )
   create(@Body() data: CreateFtiDto, @UploadedFiles() files: any, @Req() user: any) {
-    const newData = Object.assign({}, data, {
-      Images: {
-        img_produto: files.img_produto[0].filename,
-        img_camara: files.img_camara[0].filename,
-      },
-      user: user.user.user
-    });
+    let newData: any;
+    if(files.img_produto || files.img_camara) {
+      newData = Object.assign({}, data, {
+        Images: {
+          img_produto: files.img_produto[0].filename,
+          img_camara: files.img_camara[0].filename,
+        },
+        user: user.user.user
+      });
+    } else {
+      newData = Object.assign({}, data, {
+        user: user.user.user
+      });
+    }
+    
+    
       return this.ftiService.create(newData);
   }
 

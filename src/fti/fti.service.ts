@@ -376,7 +376,7 @@ export class FtiService implements FtiRepository {
         },
         Imagens: {
           createMany: {
-            data: Images,
+            data: Images ? Images : null,
           },
         },
       },
