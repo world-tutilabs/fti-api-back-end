@@ -3,10 +3,14 @@ import { Injectable } from '@nestjs/common';
 import { Fti } from '@prisma/client';
 import { FtiRepository } from './repository/fti-repository';
 import { CreateFtiDto, HomologDto } from './types';
+import { MailerService } from '@nestjs-modules/mailer/dist/mailer.service';
 
 @Injectable()
 export class FtiService implements FtiRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private mailerService: MailerService,
+  ) {}
   async history(molde: string): Promise<Partial<Fti>[]> {
     return await this.prisma.fti.findMany({
       where: {
@@ -233,6 +237,169 @@ export class FtiService implements FtiRepository {
     });
   }
 
+  // async create(data: CreateFtiDto): Promise<any> {
+  //   const {
+  //     user,
+  //     produto,
+  //     cod_produto,
+  //     cod_molde,
+  //     cliente,
+  //     modelo,
+  //     maquina,
+  //     materia_prima,
+  //     pigmento,
+  //     cor,
+  //     qtd_cavidade,
+  //     Dimensao,
+  //     Estufagem,
+  //     DispositivoSeguranca,
+  //     RefrigeracaoMolde,
+  //     Cavidade,
+  //     AquecedorAgua,
+  //     Resumo,
+  //     InfoGeraisRegulagem,
+  //     Tempos,
+  //     Pressoes,
+  //     Cursos,
+  //     TemperaturaCilindro,
+  //     Dosador,
+  //     Injecao,
+  //     Recalque,
+  //     Dosagem,
+  //     ProgramacaoMachos,
+  //     BicoCamaraQuente,
+  //     Sequenciador,
+  //     Images,
+  //   } = data;
+  //   return await this.prisma.fti
+  //     .create({
+  //       data: {
+  //         cliente,
+  //         cod_molde,
+  //         cod_produto,
+  //         cor,
+  //         maquina,
+  //         materia_prima,
+  //         modelo,
+  //         pigmento,
+  //         produto,
+  //         qtd_cavidade: Number(qtd_cavidade),
+  //         Homologacao: {
+  //           create: {
+  //             user_created: user,
+  //             statusId: 1,
+  //             revisao: 0,
+  //           },
+  //         },
+  //         Dimensao: {
+  //           createMany: {
+  //             data: JSON.parse(Dimensao as any),
+  //           },
+  //         },
+  //         Estufagem: {
+  //           createMany: {
+  //             data: JSON.parse(Estufagem as any),
+  //           },
+  //         },
+  //         DispositivoSeguranca: {
+  //           createMany: {
+  //             data: JSON.parse(DispositivoSeguranca as any),
+  //           },
+  //         },
+  //         RefrigeracaoMolde: {
+  //           createMany: {
+  //             data: JSON.parse(RefrigeracaoMolde as any),
+  //           },
+  //         },
+  //         Cavidade: {
+  //           createMany: {
+  //             data: JSON.parse(Cavidade as any),
+  //           },
+  //         },
+  //         AquecedorAgua: {
+  //           create: {
+  //             check_aquecedor: AquecedorAgua as any,
+  //           },
+  //         },
+  //         Resumo: {
+  //           createMany: {
+  //             data: JSON.parse(Resumo as any),
+  //           },
+  //         },
+  //         InfoGeraisRegulagem: {
+  //           createMany: {
+  //             data: JSON.parse(InfoGeraisRegulagem as any),
+  //           },
+  //         },
+  //         Tempos: {
+  //           createMany: {
+  //             data: JSON.parse(Tempos as any),
+  //           },
+  //         },
+  //         Pressoes: {
+  //           createMany: {
+  //             data: JSON.parse(Pressoes as any),
+  //           },
+  //         },
+  //         Cursos: {
+  //           createMany: {
+  //             data: JSON.parse(Cursos as any),
+  //           },
+  //         },
+  //         TemperaturaCilindro: {
+  //           createMany: {
+  //             data: JSON.parse(TemperaturaCilindro as any),
+  //           },
+  //         },
+  //         Dosador: {
+  //           createMany: {
+  //             data: JSON.parse(Dosador as any),
+  //           },
+  //         },
+  //         Injecao: {
+  //           createMany: {
+  //             data: {
+  //               injecao: Injecao,
+  //             },
+  //           },
+  //         },
+  //         Recalque: {
+  //           create: {
+  //             recalque: Recalque,
+  //           },
+  //         },
+  //         Dosagem: {
+  //           create: {
+  //             dosagem: Dosagem,
+  //           },
+  //         },
+  //         ProgramacaoMachos: {
+  //           createMany: {
+  //             data: JSON.parse(ProgramacaoMachos as any),
+  //           },
+  //         },
+  //         BicoCamaraQuente: {
+  //           createMany: {
+  //             data: JSON.parse(BicoCamaraQuente as any),
+  //           },
+  //         },
+  //         Sequenciador: {
+  //           createMany: {
+  //             data: JSON.parse(Sequenciador as any),
+  //           },
+  //         },
+  //         Imagens: {
+  //           createMany: {
+  //             data: Images,
+  //           },
+  //         },
+  //       },
+  //     })
+  //     .then(
+  //       async (fti) => await this.sendEmail(fti.id, 'email@email.com', 'nome'),
+  //     );
+  // }
+
   async findOne(id: number): Promise<Partial<Fti>> {
     return await this.prisma.fti.findFirst({
       where: { id },
@@ -421,6 +588,17 @@ export class FtiService implements FtiRepository {
       where: { id },
       data: {
         statusId: 3,
+      },
+    });
+  }
+
+  async sendEmail(ftiId: number, email: string, name: string) {
+    await this.mailerService.sendMail({
+      to: email,
+      subject: `FTI ${ftiId} aguardando homologação`,
+      template: './test.pug',
+      context: {
+        name: name,
       },
     });
   }
