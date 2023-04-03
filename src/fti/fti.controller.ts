@@ -1,5 +1,11 @@
 import { Controller, Get, Param, UseInterceptors } from '@nestjs/common';
-import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 import { FtiService } from './fti.service';
 import {
   Body,
@@ -27,11 +33,14 @@ export class FtiController {
   constructor(private readonly ftiService: FtiService) {}
 
   @Get('list/:id')
+  @ApiParam({ name: 'id', description: '1 ou 2' })
+  @ApiOperation({ summary: 'Lista todas as FTIs Em Aprovação ou Homologadas' })
   async listOnApproval(@Param() { id }: FindByStatusIdParam) {
     return await this.ftiService.listAllByStatus(+id);
   }
 
   @Post('create')
+  @ApiOperation({ summary: 'Cria uma nova FTI' })
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileFieldsInterceptor(
@@ -58,6 +67,7 @@ export class FtiController {
   }
 
   @Get('find/:id')
+  @ApiOperation({ summary: 'Procura FTI específica' })
   async findOne(@Param() { id }: FindByIdParam) {
     const result = await this.ftiService.findOne(+id);
 
@@ -67,11 +77,13 @@ export class FtiController {
   }
 
   @Put('homologation/:id')
+  @ApiOperation({ summary: 'Homologa FTI específica' })
   async homologation(@Param() { id }: FindByIdParam, @Req() user: any) {
     return this.ftiService.homolog(+id, user.user);
   }
 
   @Patch('hide/:id')
+  @ApiOperation({ summary: `Altera o Status da FTI para 'Versionada'` })
   @HttpCode(204)
   async hideOne(@Param() { id }: FindByIdParam) {
     const result = await this.ftiService.findOne(+id);
@@ -81,6 +93,7 @@ export class FtiController {
   }
 
   @Get('/history/:molde')
+  @ApiOperation({ summary: `Lista Histórico de FTI do respectivo molde` })
   async history(@Param() { molde }: FindHistoryParams) {
     return await this.ftiService.history(molde);
   }
