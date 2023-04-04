@@ -27,8 +27,9 @@ export class FtiController {
   constructor(private readonly ftiService: FtiService, ) {}
 
   @Get('list/:id')
-  async listOnApproval(@Param() { id }: FindByStatusIdParam) {
-    return await this.ftiService.listAllByStatus(+id);
+  async listOnApproval(@Param() { id }: FindByStatusIdParam, @Req() data:any) {
+    const newData = {id, offset: data.headers.offset, limit: data.headers.limit}
+   return await this.ftiService.listAllByStatus(newData);
   }
 
   @Post('create')

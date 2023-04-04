@@ -216,11 +216,15 @@ export class FtiService implements FtiRepository {
     throw new Error('Method not implemented.');
   }
 
-  async listAllByStatus(statusId: number): Promise<Partial<Fti[]>> {
+  async listAllByStatus(data: any): Promise<Partial<Fti[]>> {
+    const {id, limit, offset} = data
+    
     return await this.prisma.fti.findMany({
+      take: +limit,
+      skip: +offset,
       where: {
         Homologacao: {
-          every: { statusId },
+          every: { statusId: +id },
         },
       },
     });
