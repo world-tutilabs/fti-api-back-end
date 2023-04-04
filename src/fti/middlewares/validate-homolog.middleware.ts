@@ -19,7 +19,7 @@ export class ValidateHomologMiddleware implements NestMiddleware {
         { headers: { Authorization: req.headers.authorization } },
       );
       const role = user.data.user.nivel_de_acesso.descricao;
-    if (role === 'eng_analista'){
+    if (role === 'eng_admin'){
       req.user = user.data
       next(); 
     } else {

@@ -424,6 +424,7 @@ export class FtiService implements FtiRepository {
           select: {
             check_bico_camara_quente: true,
             temperatura_programada: true,
+            check_tipos_temperatura: true
           },
         },
         Cavidade: {
