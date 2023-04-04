@@ -258,8 +258,9 @@ export class FtiService implements FtiRepository {
       BicoCamaraQuente,
       Sequenciador,
       Images,
+      Comentario
     } = data;
-    const resp = await this.prisma.fti.create({
+    return await this.prisma.fti.create({
       data: {
         cliente,
         cod_molde,
@@ -273,7 +274,7 @@ export class FtiService implements FtiRepository {
         qtd_cavidade: qtd_cavidade,
         Homologacao: {
           create: {
-            user_created: user,
+            user_created: {user,Comentario},
             statusId: 1,
             revisao: 0,
           },
@@ -382,8 +383,6 @@ export class FtiService implements FtiRepository {
         },
       },
     })
-    console.log(resp)
-    return null
   }
 
   async findOne(id: number): Promise<Partial<Fti>> {

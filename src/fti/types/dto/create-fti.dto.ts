@@ -106,6 +106,7 @@ export class CreateFtiDto implements Fti {
   Tempos: CreateTemposDto;
   img_produto: any;
   img_camara: any;
+  Comentario: string
 }
 
 type CreateHomologacaoDto = Homologacao;
