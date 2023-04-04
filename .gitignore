@@ -3,7 +3,7 @@
 /node_modules
 /vdata
 /uploads
-
+/mysql_data
 # Logs
 logs
 *.log
