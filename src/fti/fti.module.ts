@@ -23,7 +23,7 @@ export class FtiModule implements NestModule {
       .forRoutes(FtiController);
     consumer.apply(ValidateHomologMiddleware).forRoutes(
       {
-        path: 'fti/homologation',
+        path: 'fti/homologation/:id',
         method: RequestMethod.PUT,
       },
       { path: 'fti/hide/:id', method: RequestMethod.PATCH },
