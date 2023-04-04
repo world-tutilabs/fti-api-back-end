@@ -515,6 +515,8 @@ export class FtiService implements FtiRepository {
         ProgramacaoMachos: {
           select: {
             check_programacao_machos: true,
+            check_posicao: true,
+            check_tempo: true,
             macho: true,
           },
         },
