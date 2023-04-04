@@ -27,7 +27,7 @@ model Fti {
   materia_prima        String                 @db.VarChar(250)
   pigmento             String                 @db.VarChar(250)
   cor                  String                 @db.VarChar(250)
-  qtd_cavidade         Int                    @default(0)
+  qtd_cavidade         String                 @default("0") @db.VarChar(250)
   createdAt            DateTime               @default(now())
   updatedAt            DateTime               @updatedAt
   AquecedorAgua        AquecedorAgua[]
@@ -60,7 +60,7 @@ model Homologacao {
   user_created      Json
   user_homologation Json?
   statusId          Int
-  Fti               Fti    @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_homologacao")
+  Fti               Fti    @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_homologacao")
   Status            Status @relation(fields: [statusId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([ftiId])
@@ -86,8 +86,9 @@ model BicoCamaraQuente {
   id                       Int                                       @id @default(autoincrement())
   ftiId                    Int
   check_bico_camara_quente BicoCamaraQuente_check_bico_camara_quente
+  check_tipos_temperatura  BicoCamaraQuente_check_tipos_temperatura
   temperatura_programada   Json?
-  Fti                      Fti                                       @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_bico_camara_quente")
+  Fti                      Fti                                       @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_bico_camara_quente")
 
   @@index([ftiId])
 }
@@ -117,9 +118,9 @@ model Cursos {
 model Dimensao {
   id          Int    @id @default(autoincrement())
   ftiId       Int
-  altura      Int    @default(0)
-  comprimento Int    @default(0)
-  largura     Int    @default(0)
+  altura      String @default("0") @db.VarChar(250)
+  comprimento String @default("0") @db.VarChar(250)
+  largura     String @default("0") @db.VarChar(250)
   produto     String @default("0") @db.VarChar(250)
   Fti         Fti    @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_dimensao")
 
@@ -153,7 +154,7 @@ model Dosagem {
   id      Int   @id @default(autoincrement())
   ftiId   Int
   dosagem Json?
-  Fti     Fti   @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_dosagem")
+  Fti     Fti   @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_dosagem")
 
   @@index([ftiId])
 }
@@ -171,11 +172,11 @@ model Estufagem {
 }
 
 model Imagens {
-  id          Int    @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   ftiId       Int
-  img_produto String @db.VarChar(250)
-  img_camara  String @db.VarChar(250)
-  Fti         Fti    @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_imagens")
+  img_produto String? @db.VarChar(250)
+  img_camara  String? @db.VarChar(250)
+  Fti         Fti     @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_imagens")
 
   @@index([ftiId])
 }
@@ -198,7 +199,7 @@ model Injecao {
   id      Int  @id @default(autoincrement())
   ftiId   Int
   injecao Json
-  Fti     Fti  @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_injecao")
+  Fti     Fti  @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_injecao")
 
   @@index([ftiId])
 }
@@ -221,8 +222,10 @@ model ProgramacaoMachos {
   id                       Int                                        @id @default(autoincrement())
   ftiId                    Int
   check_programacao_machos ProgramacaoMachos_check_programacao_machos
+  check_posicao            ProgramacaoMachos_check_posicao
+  check_tempo              ProgramacaoMachos_check_tempo
   macho                    Json?
-  Fti                      Fti                                        @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_prog_machos")
+  Fti                      Fti                                        @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_prog_machos")
 
   @@index([ftiId])
 }
@@ -231,7 +234,7 @@ model Recalque {
   id       Int   @id @default(autoincrement())
   ftiId    Int
   recalque Json?
-  Fti      Fti   @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_recalque")
+  Fti      Fti   @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_recalque")
 
   @@index([ftiId])
 }
@@ -266,17 +269,23 @@ model Sequenciador {
   ftiId              Int
   check_sequenciador Sequenciador_check_sequenciador
   sequenciador       Json?
-  Fti                Fti                             @relation(fields: [ftiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK1_fti_sequenciador")
+  Fti                Fti                             @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_sequenciador")
 
   @@index([ftiId])
 }
 
 model TemperaturaCilindro {
-  id    Int    @id @default(autoincrement())
-  ftiId Int
-  bico  String @default("0") @db.VarChar(250)
-  zona  String @default("0") @db.VarChar(250)
-  Fti   Fti    @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_temperatura_cilindro")
+  id     Int     @id @default(autoincrement())
+  ftiId  Int
+  bico   String  @default("0") @db.VarChar(250)
+  zona_1 String? @default("0") @db.VarChar(250)
+  zona_2 String? @default("0") @db.VarChar(250)
+  zona_3 String? @default("0") @db.VarChar(250)
+  zona_4 String? @default("0") @db.VarChar(250)
+  zona_5 String? @default("0") @db.VarChar(250)
+  zona_6 String? @default("0") @db.VarChar(250)
+  zona_7 String? @default("0") @db.VarChar(250)
+  Fti    Fti     @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_temperatura_cilindro")
 
   @@index([ftiId])
 }
@@ -297,54 +306,67 @@ model Tempos {
   @@index([ftiId])
 }
 
-enum Estufagem_check_estufagem {
-  Y
-  N
-}
-
-enum DispositivoSeguranca_check_dispositivo_seg {
-  Y
-  N
-}
-
-enum DispositivoSeguranca_sensor {
-  Y
-  N
-}
-
-enum DispositivoSeguranca_micro_sw {
-  Y
-  N
-}
-
-enum DispositivoSeguranca_fim_curso {
-  Y
-  N
-}
-
 enum AquecedorAgua_check_aquecedor {
-  Y
-  N
-}
-
-enum Dosador_check_dosador {
-  Y
-  N
-}
-
-enum ProgramacaoMachos_check_programacao_machos {
-  Y
-  N
+  true
+  false
 }
 
 enum BicoCamaraQuente_check_bico_camara_quente {
-  Y
-  N
-  K
-  J
+  true
+  false
+}
+
+enum DispositivoSeguranca_check_dispositivo_seg {
+  true
+  false
+}
+
+enum Dosador_check_dosador {
+  true
+  false
+}
+
+enum Estufagem_check_estufagem {
+  true
+  false
 }
 
 enum Sequenciador_check_sequenciador {
-  Y
-  N
+  true
+  false
+}
+
+enum DispositivoSeguranca_sensor {
+  true
+  false
+}
+
+enum DispositivoSeguranca_micro_sw {
+  true
+  false
+}
+
+enum DispositivoSeguranca_fim_curso {
+  true
+  false
+}
+
+enum ProgramacaoMachos_check_programacao_machos {
+  true
+  false
+}
+
+enum ProgramacaoMachos_check_posicao {
+  true
+  false
+}
+
+enum ProgramacaoMachos_check_tempo {
+  true
+  false
+}
+
+enum BicoCamaraQuente_check_tipos_temperatura {
+  K
+  J
 }

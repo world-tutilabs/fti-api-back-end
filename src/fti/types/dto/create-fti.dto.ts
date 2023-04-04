@@ -1,3 +1,4 @@
+import { ApiHideProperty } from '@nestjs/swagger';
 import {
   Fti,
   Homologacao,
@@ -26,7 +27,9 @@ import { Type } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateFtiDto implements Fti {
+  user: any;
   id: number;
+  @ApiHideProperty()
   statusId: number;
   @IsString()
   @IsNotEmpty()
@@ -55,11 +58,11 @@ export class CreateFtiDto implements Fti {
   @IsString()
   @IsNotEmpty()
   cor: string;
-  @IsNumber()
   @IsNotEmpty()
-  @Type(() => Number)
-  qtd_cavidade: number;
+  qtd_cavidade: string;
+  @ApiHideProperty()
   createdAt: Date;
+  @ApiHideProperty()
   updatedAt: Date;
   Homologacao: CreateHomologacaoDto;
   @IsNotEmpty()
@@ -101,6 +104,8 @@ export class CreateFtiDto implements Fti {
   TemperaturaCilindro: CreateTemperaturaCilindroDto;
   @IsNotEmpty()
   Tempos: CreateTemposDto;
+  img_produto: any;
+  img_camara: any;
 }
 
 type CreateHomologacaoDto = Homologacao;
