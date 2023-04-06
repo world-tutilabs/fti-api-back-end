@@ -69,6 +69,7 @@ export class CreateFtiDto implements Partial<Fti> {
   @ApiHideProperty()
   Homologacao: CreateHomologacaoDto;
   @IsString()
+  @IsNotEmpty()
   AquecedorAgua: CreateAquecedorAguaDto;
   @IsJSON()
   @IsNotEmpty()

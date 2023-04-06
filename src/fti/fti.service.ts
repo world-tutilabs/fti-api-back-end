@@ -1,9 +1,16 @@
 import { PrismaService } from '../prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
-import { Fti } from '@prisma/client';
+import {
+  Fti,
+  AquecedorAgua,
+  Cavidade,
+  Imagens,
+  BicoCamaraQuente,
+} from '@prisma/client';
 import { FtiRepository } from './repository/fti-repository';
 import { CreateFtiDto, HomologDto } from './types';
 import { MailerService } from '@nestjs-modules/mailer/dist/mailer.service';
+import * as fs from 'fs';
 
 @Injectable()
 export class FtiService implements FtiRepository {
@@ -112,6 +119,7 @@ export class FtiService implements FtiRepository {
       Sequenciador,
       Images,
     } = data;
+
     return await this.prisma.fti.create({
       data: {
         cliente,
@@ -599,6 +607,191 @@ export class FtiService implements FtiRepository {
       template: './test.pug',
       context: {
         name: name,
+      },
+    });
+  }
+
+  async update(id: number, data: any, files: any, user: any) {
+    if (files.img_produto) {
+      const imgProduto = await this.prisma.imagens.findFirst({
+        where: {
+          ftiId: id,
+        },
+        select: {
+          img_produto: true,
+        },
+      });
+
+      fs.unlink(
+        process.cwd() + '/uploads/' + imgProduto.img_produto,
+        function (err) {
+          if (err) throw err;
+          console.log('File deleted!');
+        },
+      );
+    }
+
+    if (files.img_camara) {
+      const imgCamara = await this.prisma.imagens.findFirst({
+        where: {
+          ftiId: id,
+        },
+        select: { img_camara: true },
+      });
+
+      fs.unlink(
+        process.cwd() + '/uploads/' + imgCamara.img_camara,
+        function (err) {
+          if (err) throw err;
+          console.log('File deleted!');
+        },
+      );
+    }
+
+    return await this.prisma.fti.update({
+      where: { id },
+      data: {
+        produto: data.produto,
+        cod_produto: data.cod_produto,
+        cod_molde: data.cod_molde,
+        cliente: data.cliente,
+        modelo: data.modelo,
+        maquina: data.maquina,
+        materia_prima: data.materia_prima,
+        pigmento: data.pigmento,
+        cor: data.cor,
+        qtd_cavidade: +data.qtd_cavidade,
+        updatedAt: new Date(),
+        AquecedorAgua: {
+          update: {
+            where: { id },
+            data: { check_aquecedor: data.AquecedorAgua as any },
+          },
+        },
+        BicoCamaraQuente: {
+          update: {
+            where: { id },
+            data: JSON.parse(data.BicoCamaraQuente as any),
+          },
+        },
+        Cavidade: {
+          deleteMany: {},
+          createMany: {
+            data: JSON.parse(data.Cavidade as any),
+          },
+        },
+        Cursos: {
+          deleteMany: {},
+          createMany: {
+            data: JSON.parse(data.Cursos as any),
+          },
+        },
+        Dimensao: {
+          deleteMany: {},
+          createMany: {
+            data: JSON.parse(data.Dimensao as any),
+          },
+        },
+        DispositivoSeguranca: {
+          deleteMany: {},
+          createMany: {
+            data: JSON.parse(data.DispositivoSeguranca as any),
+          },
+        },
+        Dosador: {
+          deleteMany: {},
+          createMany: {
+            data: JSON.parse(data.Dosador as any),
+          },
+        },
+        Dosagem: {
+          update: {
+            where: { id },
+            data: { dosagem: data.Dosagem },
+          },
+        },
+        Estufagem: {
+          deleteMany: {},
+          createMany: {
+            data: JSON.parse(data.Estufagem as any),
+          },
+        },
+        Homologacao: {
+          update: {
+            where: { id },
+            data: {
+              statusId: 1,
+            },
+          },
+        },
+        Imagens: {
+          update: {
+            where: { id },
+            data: {
+              img_produto:
+                files.img_produto !== undefined
+                  ? files.img_produto[0].filename
+                  : undefined,
+              img_camara:
+                files.img_camara !== undefined
+                  ? files.img_camara[0].filename
+                  : undefined,
+            },
+          },
+        },
+        InfoGeraisRegulagem: {
+          deleteMany: {},
+          createMany: {
+            data: JSON.parse(data.InfoGeraisRegulagem as any),
+          },
+        },
+        Injecao: {
+          deleteMany: {},
+          createMany: {
+            data: { injecao: data.Injecao },
+          },
+        },
+        Pressoes: {
+          createMany: {
+            data: JSON.parse(data.Pressoes as any),
+          },
+        },
+        ProgramacaoMachos: {
+          createMany: {
+            data: JSON.parse(data.ProgramacaoMachos as any),
+          },
+        },
+        Recalque: {
+          update: {
+            where: { id },
+            data: { recalque: data.Recalque },
+          },
+        },
+        RefrigeracaoMolde: {
+          createMany: {
+            data: JSON.parse(data.RefrigeracaoMolde as any),
+          },
+        },
+        Resumo: {
+          createMany: {
+            data: JSON.parse(data.Resumo as any),
+          },
+        },
+        Sequenciador: {
+          createMany: {
+            data: JSON.parse(data.Sequenciador as any),
+          },
+        },
+        TemperaturaCilindro: {
+          createMany: {
+            data: JSON.parse(data.TemperaturaCilindro as any),
+          },
+        },
+        Tempos: {
+          createMany: {
+            data: JSON.parse(data.Tempos as any),
+          },
+        },
       },
     });
   }

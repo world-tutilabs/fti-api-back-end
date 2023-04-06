@@ -11,5 +11,11 @@ export abstract class FtiRepository {
   abstract history(
     molde: string,
   ): Promise<Partial<Fti>[]> & Partial<Homologacao>;
+  abstract update(
+    id: number,
+    data: Partial<CreateFtiDto>,
+    files: any,
+    user: any,
+  ): Promise<Partial<Fti>>;
   // abstract sendEmail(email: string, name: string): any;
 }

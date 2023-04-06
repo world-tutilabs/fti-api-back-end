@@ -11,10 +11,10 @@ import {
   Body,
   Post,
   UploadedFiles,
-  Put,
   Patch,
   HttpCode,
   Req,
+  Put,
 } from '@nestjs/common/decorators';
 import { FileFieldsInterceptor } from '@nestjs/platform-express/multer';
 import { multerOptions } from 'src/config/multer.config';
@@ -70,7 +70,6 @@ export class FtiController {
   @ApiOperation({ summary: 'Procura FTI específica' })
   async findOne(@Param() { id }: FindByIdParam) {
     const result = await this.ftiService.findOne(+id);
-
     if (!result) throw new NotFoundException(`FTI ${id} Not Found`);
 
     return result;
@@ -87,7 +86,7 @@ export class FtiController {
   @HttpCode(204)
   async hideOne(@Param() { id }: FindByIdParam) {
     const result = await this.ftiService.findOne(+id);
-    if (!result) throw new NotFoundException(`id ${id} not found`);
+    if (!result) throw new NotFoundException(`FTI ${id} Not Found`);
 
     return this.ftiService.hideOne(+id);
   }
@@ -96,5 +95,28 @@ export class FtiController {
   @ApiOperation({ summary: `Lista Histórico de FTI do respectivo molde` })
   async history(@Param() { molde }: FindHistoryParams) {
     return await this.ftiService.history(molde);
+  }
+
+  @Put('update/:id')
+  @ApiOperation({ summary: `Atualiza FTI específica` })
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [
+        { name: 'img_produto', maxCount: 1 },
+        { name: 'img_camara', maxCount: 1 },
+      ],
+      multerOptions,
+    ),
+  )
+  @ApiConsumes('multipart/form-data')
+  async update(
+    @Param() { id }: FindByIdParam,
+    @Body() data: Partial<CreateFtiDto>,
+    @UploadedFiles() files: any,
+    @Req() user: any,
+  ) {
+    const result = await this.ftiService.findOne(+id);
+    if (!result) throw new NotFoundException(`FTI ${id} Not Found`);
+    return this.ftiService.update(+id, data, files, user);
   }
 }
