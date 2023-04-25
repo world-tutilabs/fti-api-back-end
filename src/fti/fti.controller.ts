@@ -36,11 +36,11 @@ export class FtiController {
   constructor(private readonly ftiService: FtiService) {}
 
   @Get('list/:id')
-  @ApiHeader({ name: 'offset' })
-  @ApiHeader({ name: 'limit' })
+  @ApiHeader({ name: 'offset', example: '0' })
+  @ApiHeader({ name: 'limit', example: '10' })
   @ApiParam({
     name: 'id',
-    description: '1: Em aprovação, 2: Homologadas ou 3 para Reprovadas',
+    description: '1: Em Aprovação, 2: Homologadas ou 3 para Reprovadas',
   })
   @ApiOperation({
     summary: 'Lista todas as FTIs Em Aprovação, Homologadas ou Reprovadas',
@@ -82,7 +82,7 @@ export class FtiController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Procura FTI específica' })
+  @ApiOperation({ summary: 'Busca FTI específica' })
   async findOne(@Param() { id }: FindByIdParam) {
     const result = await this.ftiService.findOne(+id);
     if (!result) throw new NotFoundException(`FTI ${id} Not Found`);
@@ -126,15 +126,16 @@ export class FtiController {
   @ApiConsumes('multipart/form-data')
   async update(
     @Param() { id }: FindByIdParam,
-    @Body() data: Partial<CreateFtiDto>,
+    @Body() data: CreateFtiDto,
     @UploadedFiles() files: any,
     @Req() user: any,
   ) {
     const result = await this.ftiService.findOne(+id);
     if (!result) throw new NotFoundException(`id ${id} not found`);
 
-    return this.ftiService.hideOne(+id);
+    return this.ftiService.update(+id, data, files, user); //TODO: update
   }
+
   @Post('versioning/:mold&&:product')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(

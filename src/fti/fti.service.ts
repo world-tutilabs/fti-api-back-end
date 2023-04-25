@@ -441,6 +441,29 @@ export class FtiService implements FtiRepository {
           },
         },
       },
+      include: {
+        AquecedorAgua: true,
+        BicoCamaraQuente: true,
+        Cavidade: true,
+        Cursos: true,
+        Dimensao: true,
+        DispositivoSeguranca: true,
+        Dosador: true,
+        Dosagem: true,
+        Estufagem: true,
+        Homologacao: true,
+        Imagens: true,
+        InfoGeraisRegulagem: true,
+        Injecao: true,
+        Pressoes: true,
+        ProgramacaoMachos: true,
+        Recalque: true,
+        RefrigeracaoMolde: true,
+        Resumo: true,
+        Sequenciador: true,
+        TemperaturaCilindro: true,
+        Tempos: true,
+      },
     });
   }
 
@@ -650,7 +673,7 @@ export class FtiService implements FtiRepository {
     });
   }
 
-  async update(id: number, data: any, files: any, user: any) {
+  async update(id: number, data: CreateFtiDto, files: any, user: any) {
     if (files.img_produto) {
       const imgProduto = await this.prisma.imagens.findFirst({
         where: {
