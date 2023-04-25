@@ -81,7 +81,7 @@ export class FtiController {
     return this.ftiService.create(newData);
   }
 
-  @Get('find/:id')
+  @Get(':id')
   @ApiOperation({ summary: 'Procura FTI específica' })
   async findOne(@Param() { id }: FindByIdParam) {
     const result = await this.ftiService.findOne(+id);

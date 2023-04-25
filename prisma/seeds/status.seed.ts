@@ -8,6 +8,7 @@ async function main() {
     { id: 2, descricao: 'Homologada' },
     { id: 3, descricao: 'Reprovada' },
     { id: 4, descricao: 'Versionada' },
+    { id: 5, descricao: 'Cancelada' },
   ];
 
   const isEmpty = await prisma.status.findMany({}).then((status) => {

@@ -634,7 +634,7 @@ export class FtiService implements FtiRepository {
     return await this.prisma.homologacao.update({
       where: { id },
       data: {
-        statusId: 3,
+        statusId: 5,
       },
     });
   }
