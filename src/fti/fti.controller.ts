@@ -137,6 +137,7 @@ export class FtiController {
   }
 
   @Post('versioning/:mold&&:product')
+  @ApiOperation({ summary: `Versiona FTI por molde e produto` })
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileFieldsInterceptor(
