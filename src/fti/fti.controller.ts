@@ -96,7 +96,7 @@ export class FtiController {
     return this.ftiService.homolog(data);
   }
 
-  @Patch('hide/:id')
+  @Patch('cancel/:id')
   @ApiOperation({ summary: `Altera o Status da FTI para 'Cancelada'` })
   @HttpCode(204)
   async cancelOne(@Param() { id }: FindByIdParam) {
