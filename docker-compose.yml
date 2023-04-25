@@ -25,10 +25,10 @@ services:
     ports:
       - '${API_PORT}:${API_PORT}'
     volumes:
-      # - ./dist/:/usr/src/api-node-fti/dist/ Verificar pois o dist é enviado vazio - Luan
+      - ./dist/:/usr/src/api-node-fti/dist/ 
       - ./package.json:${PATH_API}/package.json
-      # - ./nest-cli.json:/usr/src/api-node-fti/nest-cli.json 
-      # - ./prisma:/usr/src/api-node-fti/prisma/
+      - ./nest-cli.json:/usr/src/api-node-fti/nest-cli.json 
+      - ./prisma:/usr/src/api-node-fti/prisma/
     networks:
       - nw_new_api_fti   
 networks:

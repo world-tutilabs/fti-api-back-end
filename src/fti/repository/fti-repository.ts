@@ -1,3 +1,4 @@
+import { VersioningParam } from './../types/params/versioning';
 import { Fti, Homologacao } from '@prisma/client';
 import { HomologDto } from '../types/dto/homolog-fti.dto';
 import { CreateFtiDto } from '../types/dto/create-fti.dto';
@@ -18,4 +19,5 @@ export abstract class FtiRepository {
     user: any,
   ): Promise<Partial<Fti>>;
   // abstract sendEmail(email: string, name: string): any;
+  abstract versioning(data: VersioningParam): Promise<void>;
 }

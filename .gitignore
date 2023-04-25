@@ -4,9 +4,7 @@
 /vdata
 /mysql_data
 /uploads
-/.env
-node_modules
-mysql_data
+/mysql_data
 # Logs
 logs
 *.log

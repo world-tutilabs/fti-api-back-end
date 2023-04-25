@@ -1,5 +1,10 @@
 import { PrismaService } from '../prisma/prisma.service';
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import {
   Fti,
   AquecedorAgua,
@@ -11,6 +16,7 @@ import { FtiRepository } from './repository/fti-repository';
 import { CreateFtiDto, HomologDto } from './types';
 import { MailerService } from '@nestjs-modules/mailer/dist/mailer.service';
 import * as fs from 'fs';
+import { VersioningParam } from './types/params/versioning';
 
 @Injectable()
 export class FtiService implements FtiRepository {
@@ -18,6 +24,203 @@ export class FtiService implements FtiRepository {
     private prisma: PrismaService,
     private mailerService: MailerService,
   ) {}
+  async versioning(data: VersioningParam): Promise<void> {
+    const {
+      produto,
+      cod_produto,
+      cod_molde,
+      cliente,
+      modelo,
+      maquina,
+      materia_prima,
+      pigmento,
+      cor,
+      qtd_cavidade,
+      Dimensao,
+      Estufagem,
+      DispositivoSeguranca,
+      RefrigeracaoMolde,
+      Cavidade,
+      AquecedorAgua,
+      Resumo,
+      InfoGeraisRegulagem,
+      Tempos,
+      Pressoes,
+      Cursos,
+      TemperaturaCilindro,
+      Dosador,
+      Injecao,
+      Recalque,
+      Dosagem,
+      ProgramacaoMachos,
+      BicoCamaraQuente,
+      Sequenciador,
+    } = data.body;
+    const images = {
+      img_produto: data.files.img_produto
+        ? data.files.img_produto[0].filename
+        : data.body.img_produto,
+      img_camara: data.files.img_camara
+        ? data.files.img_camara[0].filename
+        : data.body.img_camara,
+    };
+    const findByFtiPresent = await this.prisma.fti.findFirst({
+      include: {
+        Homologacao: true,
+      },
+      orderBy: {
+        id: 'desc',
+      },
+      take: 1,
+      where: {
+        AND: {
+          cod_molde: data.mold,
+          cod_produto: data.product,
+        },
+      },
+    });
+    if (!findByFtiPresent) {
+      throw new HttpException(`insistent fti`, HttpStatus.BAD_REQUEST);
+    }
+    if (findByFtiPresent.Homologacao[0].statusId === 1) {
+      throw new HttpException(
+        `Fti in approval process`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    await this.prisma.homologacao.update({
+      data: {
+        statusId: 4,
+      },
+      where: {
+        id: findByFtiPresent.id,
+      },
+    });
+    await this.prisma.fti.create({
+      data: {
+        cliente,
+        cod_molde,
+        cod_produto,
+        cor,
+        maquina,
+        materia_prima,
+        modelo,
+        pigmento,
+        produto,
+        qtd_cavidade: qtd_cavidade,
+        Homologacao: {
+          create: {
+            user_created: data.user.user.user,
+            statusId: 1,
+            revisao: findByFtiPresent.Homologacao[0].revisao + 1,
+          },
+        },
+        Dimensao: {
+          createMany: {
+            data: JSON.parse(Dimensao as any),
+          },
+        },
+        Estufagem: {
+          createMany: {
+            data: JSON.parse(Estufagem as any),
+          },
+        },
+        DispositivoSeguranca: {
+          createMany: {
+            data: JSON.parse(DispositivoSeguranca as any),
+          },
+        },
+        RefrigeracaoMolde: {
+          createMany: {
+            data: JSON.parse(RefrigeracaoMolde as any),
+          },
+        },
+        Cavidade: {
+          createMany: {
+            data: JSON.parse(Cavidade as any),
+          },
+        },
+        AquecedorAgua: {
+          create: {
+            check_aquecedor: AquecedorAgua as any,
+          },
+        },
+        Resumo: {
+          createMany: {
+            data: JSON.parse(Resumo as any),
+          },
+        },
+        InfoGeraisRegulagem: {
+          createMany: {
+            data: JSON.parse(InfoGeraisRegulagem as any),
+          },
+        },
+        Tempos: {
+          createMany: {
+            data: JSON.parse(Tempos as any),
+          },
+        },
+        Pressoes: {
+          createMany: {
+            data: JSON.parse(Pressoes as any),
+          },
+        },
+        Cursos: {
+          createMany: {
+            data: JSON.parse(Cursos as any),
+          },
+        },
+        TemperaturaCilindro: {
+          createMany: {
+            data: JSON.parse(TemperaturaCilindro as any),
+          },
+        },
+        Dosador: {
+          createMany: {
+            data: JSON.parse(Dosador as any),
+          },
+        },
+        Injecao: {
+          createMany: {
+            data: {
+              injecao: Injecao,
+            },
+          },
+        },
+        Recalque: {
+          create: {
+            recalque: Recalque,
+          },
+        },
+        Dosagem: {
+          create: {
+            dosagem: Dosagem,
+          },
+        },
+        ProgramacaoMachos: {
+          createMany: {
+            data: JSON.parse(ProgramacaoMachos as any),
+          },
+        },
+        BicoCamaraQuente: {
+          createMany: {
+            data: JSON.parse(BicoCamaraQuente as any),
+          },
+        },
+        Sequenciador: {
+          createMany: {
+            data: JSON.parse(Sequenciador as any),
+          },
+        },
+        Imagens: {
+          createMany: {
+            data: images,
+          },
+        },
+      },
+    });
+  }
   async history(molde: string): Promise<Partial<Fti>[]> {
     return await this.prisma.fti.findMany({
       where: {
@@ -43,10 +246,11 @@ export class FtiService implements FtiRepository {
   }
 
   async homolog(id: number, user: HomologDto): Promise<void> {
+    const { Comentario, status } = data.body;
     await this.prisma.homologacao.updateMany({
       data: {
-        user_homologation: user.user,
-        statusId: 2,
+        user_homologation: { user: data.user.user, Comentario },
+        statusId: Number(status),
       },
       where: {
         ftiId: id,
@@ -54,11 +258,36 @@ export class FtiService implements FtiRepository {
     });
   }
 
-  async listAllByStatus(statusId: number): Promise<Partial<Fti>[]> {
+  async listAllByStatus(data: any): Promise<Partial<Fti>[]> {
+    const { id, limit, offset } = data;
+
     return await this.prisma.fti.findMany({
+      take: +limit,
+      skip: +offset,
       where: {
         Homologacao: {
-          every: { statusId },
+          every: { statusId: +id },
+        },
+      },
+      select: {
+        id: true,
+        cod_molde: true,
+        cliente: true,
+        produto: true,
+        cod_produto: true,
+        updatedAt: true,
+        createdAt: true,
+        modelo: true,
+        materia_prima: true,
+        cor: true,
+        pigmento: true,
+        Homologacao: {
+          select: {
+            revisao: true,
+            Status: {
+              select: { descricao: true },
+            },
+          },
         },
       },
       select: {
@@ -118,6 +347,7 @@ export class FtiService implements FtiRepository {
       BicoCamaraQuente,
       Sequenciador,
       Images,
+      Comentario,
     } = data;
 
     return await this.prisma.fti.create({
@@ -131,10 +361,10 @@ export class FtiService implements FtiRepository {
         modelo,
         pigmento,
         produto,
-        qtd_cavidade: Number(qtd_cavidade),
+        qtd_cavidade: qtd_cavidade,
         Homologacao: {
           create: {
-            user_created: user,
+            user_created: { user, Comentario },
             statusId: 1,
             revisao: 0,
           },
@@ -238,7 +468,7 @@ export class FtiService implements FtiRepository {
         },
         Imagens: {
           createMany: {
-            data: Images,
+            data: Images ? Images : null,
           },
         },
       },
@@ -446,6 +676,7 @@ export class FtiService implements FtiRepository {
           select: {
             check_bico_camara_quente: true,
             temperatura_programada: true,
+            check_tipos_temperatura: true,
           },
         },
         Cavidade: {
@@ -532,6 +763,8 @@ export class FtiService implements FtiRepository {
         ProgramacaoMachos: {
           select: {
             check_programacao_machos: true,
+            check_posicao: true,
+            check_tempo: true,
             macho: true,
           },
         },

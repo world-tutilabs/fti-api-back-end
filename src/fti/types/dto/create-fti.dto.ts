@@ -62,10 +62,8 @@ export class CreateFtiDto implements Partial<Fti> {
   @IsString()
   @IsNotEmpty()
   cor: string;
-  @IsNumber()
   @IsNotEmpty()
-  @Type(() => Number)
-  qtd_cavidade: number;
+  qtd_cavidade: string;
   @ApiHideProperty()
   Homologacao: CreateHomologacaoDto;
   @IsString()
@@ -130,6 +128,7 @@ export class CreateFtiDto implements Partial<Fti> {
   img_produto: any;
   @ApiProperty({ type: 'string', format: 'binary', required: true })
   img_camara: any;
+  Comentario: string
 }
 
 type CreateHomologacaoDto = Homologacao;

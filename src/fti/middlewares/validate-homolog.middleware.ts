@@ -22,11 +22,12 @@ export class ValidateHomologMiddleware implements NestMiddleware {
       if (role === 'eng_admin') {
         req.user = user.data;
         next();
-      } else
+      } else {
         throw new HttpException(
           'Invalid Authorization Token',
           HttpStatus.FORBIDDEN,
         );
+      }
     } catch (error) {
       throw new HttpException(
         'UNAUTHORIZED Authorization Token',

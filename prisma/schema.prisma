@@ -27,7 +27,7 @@ model Fti {
   materia_prima        String                 @db.VarChar(250)
   pigmento             String                 @db.VarChar(250)
   cor                  String                 @db.VarChar(250)
-  qtd_cavidade         Int                    @default(0)
+  qtd_cavidade         String                 @default("0") @db.VarChar(250)
   createdAt            DateTime               @default(now())
   updatedAt            DateTime               @updatedAt
   AquecedorAgua        AquecedorAgua[]
@@ -118,9 +118,9 @@ model Cursos {
 model Dimensao {
   id          Int    @id @default(autoincrement())
   ftiId       Int
-  altura      Int    @default(0)
-  comprimento Int    @default(0)
-  largura     Int    @default(0)
+  altura      String @default("0") @db.VarChar(250)
+  comprimento String @default("0") @db.VarChar(250)
+  largura     String @default("0") @db.VarChar(250)
   produto     String @default("0") @db.VarChar(250)
   Fti         Fti    @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_dimensao")
 
@@ -172,11 +172,11 @@ model Estufagem {
 }
 
 model Imagens {
-  id          Int    @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   ftiId       Int
-  img_produto String @db.VarChar(250)
-  img_camara  String @db.VarChar(250)
-  Fti         Fti    @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_imagens")
+  img_produto String? @db.VarChar(250)
+  img_camara  String? @db.VarChar(250)
+  Fti         Fti     @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_imagens")
 
   @@index([ftiId])
 }
@@ -252,14 +252,15 @@ model RefrigeracaoMolde {
 }
 
 model Resumo {
-  id                  Int    @id @default(autoincrement())
+  id                  Int     @id @default(autoincrement())
   ftiId               Int
-  peso_total_cavidade String @default("") @db.VarChar(50)
-  peso_total_injecao  String @default("") @db.VarChar(50)
-  peso_medio_bruto    String @default("") @db.VarChar(50)
-  peso_medio_liquido  String @default("") @db.VarChar(50)
-  peso_galho          String @default("") @db.VarChar(50)
-  Fti                 Fti    @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_resumo")
+  peso_total_cavidade String  @default("") @db.VarChar(50)
+  peso_total_injecao  String  @default("") @db.VarChar(50)
+  peso_medio_bruto    String  @default("") @db.VarChar(50)
+  peso_medio_liquido  String  @default("") @db.VarChar(50)
+  peso_galho          String  @default("") @db.VarChar(50)
+  outros              String? @db.VarChar(50)
+  Fti                 Fti     @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_resumo")
 
   @@index([ftiId])
 }
@@ -336,11 +337,6 @@ enum Sequenciador_check_sequenciador {
   false
 }
 
-enum BicoCamaraQuente_check_tipos_temperatura {
-  k
-  j
-}
-
 enum DispositivoSeguranca_sensor {
   true
   false
@@ -369,4 +365,9 @@ enum ProgramacaoMachos_check_posicao {
 enum ProgramacaoMachos_check_tempo {
   true
   false
+}
+
+enum BicoCamaraQuente_check_tipos_temperatura {
+  k
+  j
 }

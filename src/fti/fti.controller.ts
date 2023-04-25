@@ -1,3 +1,4 @@
+import { VersioningParam } from './types/params/versioning';
 import { Controller, Get, Param, UseInterceptors } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -35,8 +36,13 @@ export class FtiController {
   @Get('list/:id')
   @ApiParam({ name: 'id', description: '1 ou 2' })
   @ApiOperation({ summary: 'Lista todas as FTIs Em Aprovação ou Homologadas' })
-  async listOnApproval(@Param() { id }: FindByStatusIdParam) {
-    return await this.ftiService.listAllByStatus(+id);
+  async listOnApproval(@Param() { id }: FindByStatusIdParam, @Req() data: any) {
+    const newData = {
+      id,
+      offset: data.headers.offset,
+      limit: data.headers.limit,
+    };
+    return await this.ftiService.listAllByStatus(newData);
   }
 
   @Post('create')
@@ -58,14 +64,13 @@ export class FtiController {
   ) {
     const newData = Object.assign({}, data, {
       Images: {
-        img_produto: files.img_produto[0].filename,
-        img_camara: files.img_camara[0].filename,
+        img_produto: files.img_produto ? files.img_produto[0].filename : null,
+        img_camara: files.img_camara ? files.img_camara[0].filename : null,
       },
       user: user.user.user,
     });
     return this.ftiService.create(newData);
   }
-
   @Get('find/:id')
   @ApiOperation({ summary: 'Procura FTI específica' })
   async findOne(@Param() { id }: FindByIdParam) {
@@ -116,7 +121,28 @@ export class FtiController {
     @Req() user: any,
   ) {
     const result = await this.ftiService.findOne(+id);
-    if (!result) throw new NotFoundException(`FTI ${id} Not Found`);
-    return this.ftiService.update(+id, data, files, user);
+    if (!result) throw new NotFoundException(`id ${id} not found`);
+
+    return this.ftiService.hideOne(+id);
+  }
+  @Post('versioning/:mold&&:product')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [
+        { name: 'img_produto', maxCount: 1 },
+        { name: 'img_camara', maxCount: 1 },
+      ],
+      multerOptions,
+    ),
+  )
+  async versioning(
+    @Param() { mold, product }: VersioningParam,
+    @Body() data: CreateFtiDto,
+    @UploadedFiles() files: any,
+    @Req() user: any,
+  ) {
+    const newData = { mold, product, body: data, files, user };
+    await this.ftiService.versioning(newData);
   }
 }
