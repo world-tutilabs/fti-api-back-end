@@ -653,7 +653,7 @@ export class FtiService implements FtiRepository {
     });
   }
 
-  async hideOne(id: number): Promise<Partial<Fti>> {
+  async cancelOne(id: number): Promise<Partial<Fti>> {
     return await this.prisma.homologacao.update({
       where: { id },
       data: {

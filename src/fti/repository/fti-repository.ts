@@ -7,7 +7,7 @@ export abstract class FtiRepository {
   abstract create(data: CreateFtiDto, files: any): Promise<Partial<Fti>>;
   abstract create(data: CreateFtiDto, files: any): any;
   abstract findOne(id: number): Promise<Partial<Fti>>;
-  abstract hideOne(id: number): Promise<Partial<Fti>>;
+  abstract cancelOne(id: number): Promise<Partial<Fti>>;
   abstract homolog(data: HomologDto): Promise<void>;
   abstract history(
     molde: string,

@@ -97,13 +97,13 @@ export class FtiController {
   }
 
   @Patch('hide/:id')
-  @ApiOperation({ summary: `Altera o Status da FTI para 'Versionada'` })
+  @ApiOperation({ summary: `Altera o Status da FTI para 'Cancelada'` })
   @HttpCode(204)
-  async hideOne(@Param() { id }: FindByIdParam) {
+  async cancelOne(@Param() { id }: FindByIdParam) {
     const result = await this.ftiService.findOne(+id);
     if (!result) throw new NotFoundException(`FTI ${id} Not Found`);
 
-    return this.ftiService.hideOne(+id);
+    return this.ftiService.cancelOne(+id);
   }
 
   @Get('/history/:molde')
