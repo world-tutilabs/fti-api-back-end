@@ -3,6 +3,7 @@ import { Controller, Get, Param, UseInterceptors } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiConsumes,
+  ApiHeader,
   ApiOperation,
   ApiParam,
   ApiTags,
@@ -25,6 +26,7 @@ import {
   FindByIdParam,
   FindByStatusIdParam,
   FindHistoryParams,
+  HomologDto,
 } from './types';
 
 @Controller('fti')
@@ -34,8 +36,15 @@ export class FtiController {
   constructor(private readonly ftiService: FtiService) {}
 
   @Get('list/:id')
-  @ApiParam({ name: 'id', description: '1 ou 2' })
-  @ApiOperation({ summary: 'Lista todas as FTIs Em Aprovação ou Homologadas' })
+  @ApiHeader({ name: 'offset' })
+  @ApiHeader({ name: 'limit' })
+  @ApiParam({
+    name: 'id',
+    description: '1: Em aprovação, 2: Homologadas ou 3 para Reprovadas',
+  })
+  @ApiOperation({
+    summary: 'Lista todas as FTIs Em Aprovação, Homologadas ou Reprovadas',
+  })
   async listOnApproval(@Param() { id }: FindByStatusIdParam, @Req() data: any) {
     const newData = {
       id,
@@ -71,6 +80,7 @@ export class FtiController {
     });
     return this.ftiService.create(newData);
   }
+
   @Get('find/:id')
   @ApiOperation({ summary: 'Procura FTI específica' })
   async findOne(@Param() { id }: FindByIdParam) {
@@ -82,8 +92,8 @@ export class FtiController {
 
   @Put('homologation/:id')
   @ApiOperation({ summary: 'Homologa FTI específica' })
-  async homologation(@Param() { id }: FindByIdParam, @Req() user: any) {
-    return this.ftiService.homolog(+id, user.user);
+  async homologation(@Req() data: HomologDto) {
+    return this.ftiService.homolog(data);
   }
 
   @Patch('hide/:id')
