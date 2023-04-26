@@ -94,11 +94,11 @@ export class FtiController {
   @Put('homologation/:id')
   @ApiOperation({ summary: 'Homologa FTI específica' })
   async homologation(
-    @Param() id: FindByIdParam,
+    @Param() { id }: FindByIdParam,
     @Req() user: ReqUserDto,
     @Body() body: HomologDto,
   ) {
-    return this.ftiService.homolog(+id.id, user, body);
+    return this.ftiService.homolog(+id, user, body);
   }
 
   @Patch('cancel/:id')

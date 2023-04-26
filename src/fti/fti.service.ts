@@ -236,12 +236,16 @@ export class FtiService implements FtiRepository {
     });
   }
 
-  async homolog(id: number, user: ReqUserDto, body: HomologDto): Promise<void> {
+  async homolog(
+    id: number,
+    { user }: ReqUserDto,
+    body: HomologDto,
+  ): Promise<void> {
     const { Comentario, status } = body;
 
     await this.prisma.homologacao.updateMany({
       data: {
-        user_homologation: { user: user.user, Comentario },
+        user_homologation: { user: user, Comentario },
         statusId: status,
       },
       where: {
