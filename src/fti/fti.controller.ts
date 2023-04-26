@@ -107,7 +107,6 @@ export class FtiController {
   async cancelOne(@Param() { id }: FindByIdParam) {
     const result = await this.ftiService.findOne(+id);
     if (!result) throw new NotFoundException(`FTI ${id} Not Found`);
-
     return this.ftiService.cancelOne(+id);
   }
 

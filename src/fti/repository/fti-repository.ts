@@ -23,6 +23,6 @@ export abstract class FtiRepository {
     files: any,
     user: any,
   ): Promise<Partial<Fti>>;
-  // abstract sendEmail(email: string, name: string): any;
   abstract versioning(data: VersioningParam): Promise<void>;
+  // abstract sendEmail(email: string, name: string): any;
 }

@@ -2,7 +2,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Fti } from '@prisma/client';
 import { FtiRepository } from './repository/fti-repository';
-import { CreateFtiDto, HomologDto } from './types';
+import { CreateFtiDto, HomologDto, getAllFtiDto } from './types';
 import { MailerService } from '@nestjs-modules/mailer/dist/mailer.service';
 import * as fs from 'fs';
 import { VersioningParam } from './types/params/versioning';
@@ -14,245 +14,6 @@ export class FtiService implements FtiRepository {
     private prisma: PrismaService,
     private mailerService: MailerService,
   ) {}
-  async versioning(data: VersioningParam): Promise<void> {
-    const {
-      produto,
-      cod_produto,
-      cod_molde,
-      cliente,
-      modelo,
-      maquina,
-      materia_prima,
-      pigmento,
-      cor,
-      qtd_cavidade,
-      Dimensao,
-      Estufagem,
-      DispositivoSeguranca,
-      RefrigeracaoMolde,
-      Cavidade,
-      AquecedorAgua,
-      Resumo,
-      InfoGeraisRegulagem,
-      Tempos,
-      Pressoes,
-      Cursos,
-      TemperaturaCilindro,
-      Dosador,
-      Injecao,
-      Recalque,
-      Dosagem,
-      ProgramacaoMachos,
-      BicoCamaraQuente,
-      Sequenciador,
-    } = data.body;
-    const images = {
-      img_produto: data.files.img_produto
-        ? data.files.img_produto[0].filename
-        : data.body.img_produto,
-      img_camara: data.files.img_camara
-        ? data.files.img_camara[0].filename
-        : data.body.img_camara,
-    };
-    const findByFtiPresent = await this.prisma.fti.findFirst({
-      include: {
-        Homologacao: true,
-      },
-      orderBy: {
-        id: 'desc',
-      },
-      take: 1,
-      where: {
-        AND: {
-          cod_molde: data.mold,
-          cod_produto: data.cod_product,
-        },
-      },
-    });
-    if (!findByFtiPresent) {
-      throw new HttpException(`insistent fti`, HttpStatus.BAD_REQUEST);
-    }
-    if (findByFtiPresent.Homologacao[0].statusId === 1) {
-      throw new HttpException(
-        `Fti in approval process`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    await this.prisma.homologacao.update({
-      data: {
-        statusId: 4,
-      },
-      where: {
-        id: findByFtiPresent.id,
-      },
-    });
-    await this.prisma.fti.create({
-      data: {
-        cliente,
-        cod_molde,
-        cod_produto,
-        cor,
-        maquina,
-        materia_prima,
-        modelo,
-        pigmento,
-        produto,
-        qtd_cavidade: qtd_cavidade,
-        Homologacao: {
-          create: {
-            user_created: data.user.user.user,
-            statusId: 1,
-            revisao: findByFtiPresent.Homologacao[0].revisao + 1,
-          },
-        },
-        Dimensao: {
-          createMany: {
-            data: JSON.parse(Dimensao as any),
-          },
-        },
-        Estufagem: {
-          createMany: {
-            data: JSON.parse(Estufagem as any),
-          },
-        },
-        DispositivoSeguranca: {
-          createMany: {
-            data: JSON.parse(DispositivoSeguranca as any),
-          },
-        },
-        RefrigeracaoMolde: {
-          createMany: {
-            data: JSON.parse(RefrigeracaoMolde as any),
-          },
-        },
-        Cavidade: {
-          createMany: {
-            data: JSON.parse(Cavidade as any),
-          },
-        },
-        AquecedorAgua: {
-          create: {
-            check_aquecedor: AquecedorAgua as any,
-          },
-        },
-        Resumo: {
-          createMany: {
-            data: JSON.parse(Resumo as any),
-          },
-        },
-        InfoGeraisRegulagem: {
-          createMany: {
-            data: JSON.parse(InfoGeraisRegulagem as any),
-          },
-        },
-        Tempos: {
-          createMany: {
-            data: JSON.parse(Tempos as any),
-          },
-        },
-        Pressoes: {
-          createMany: {
-            data: JSON.parse(Pressoes as any),
-          },
-        },
-        Cursos: {
-          createMany: {
-            data: JSON.parse(Cursos as any),
-          },
-        },
-        TemperaturaCilindro: {
-          createMany: {
-            data: JSON.parse(TemperaturaCilindro as any),
-          },
-        },
-        Dosador: {
-          createMany: {
-            data: JSON.parse(Dosador as any),
-          },
-        },
-        Injecao: {
-          createMany: {
-            data: {
-              injecao: Injecao,
-            },
-          },
-        },
-        Recalque: {
-          create: {
-            recalque: Recalque,
-          },
-        },
-        Dosagem: {
-          create: {
-            dosagem: Dosagem,
-          },
-        },
-        ProgramacaoMachos: {
-          createMany: {
-            data: JSON.parse(ProgramacaoMachos as any),
-          },
-        },
-        BicoCamaraQuente: {
-          createMany: {
-            data: JSON.parse(BicoCamaraQuente as any),
-          },
-        },
-        Sequenciador: {
-          createMany: {
-            data: JSON.parse(Sequenciador as any),
-          },
-        },
-        Imagens: {
-          createMany: {
-            data: images,
-          },
-        },
-      },
-    });
-  }
-
-  async history(molde: string): Promise<Partial<Fti>[]> {
-    return await this.prisma.fti.findMany({
-      where: {
-        AND: [
-          { cod_molde: molde },
-          { Homologacao: { every: { statusId: 4 } } },
-        ],
-      },
-
-      select: {
-        id: true,
-        cod_molde: true,
-        produto: true,
-        updatedAt: true,
-        maquina: true,
-        Homologacao: {
-          select: {
-            revisao: true,
-          },
-        },
-      },
-    });
-  }
-
-  async homolog(
-    id: number,
-    { user }: ReqUserDto,
-    body: HomologDto,
-  ): Promise<void> {
-    const { Comentario, status } = body;
-
-    await this.prisma.homologacao.updateMany({
-      data: {
-        user_homologation: { user: user, Comentario },
-        statusId: status,
-      },
-      where: {
-        ftiId: id,
-      },
-    });
-  }
 
   async listAllByStatus(data: any): Promise<Partial<Fti>[]> {
     const { id, limit, offset } = data;
@@ -668,13 +429,44 @@ export class FtiService implements FtiRepository {
     });
   }
 
-  async sendEmail(ftiId: number, email: string, name: string) {
-    await this.mailerService.sendMail({
-      to: email,
-      subject: `FTI ${ftiId} aguardando homologação`,
-      template: './test.pug',
-      context: {
-        name: name,
+  async homolog(
+    id: number,
+    { user }: ReqUserDto,
+    body: HomologDto,
+  ): Promise<void> {
+    const { Comentario, status } = body;
+
+    await this.prisma.homologacao.updateMany({
+      data: {
+        user_homologation: { user: user, Comentario },
+        statusId: status,
+      },
+      where: {
+        ftiId: id,
+      },
+    });
+  }
+
+  async history(molde: string): Promise<Partial<Fti>[]> {
+    return await this.prisma.fti.findMany({
+      where: {
+        AND: [
+          { cod_molde: molde },
+          { Homologacao: { every: { statusId: 4 } } },
+        ],
+      },
+
+      select: {
+        id: true,
+        cod_molde: true,
+        produto: true,
+        updatedAt: true,
+        maquina: true,
+        Homologacao: {
+          select: {
+            revisao: true,
+          },
+        },
       },
     });
   }
@@ -860,6 +652,215 @@ export class FtiService implements FtiRepository {
             data: JSON.parse(data.Tempos as any),
           },
         },
+      },
+    });
+  }
+
+  async versioning(data: VersioningParam): Promise<void> {
+    const {
+      produto,
+      cod_produto,
+      cod_molde,
+      cliente,
+      modelo,
+      maquina,
+      materia_prima,
+      pigmento,
+      cor,
+      qtd_cavidade,
+      Dimensao,
+      Estufagem,
+      DispositivoSeguranca,
+      RefrigeracaoMolde,
+      Cavidade,
+      AquecedorAgua,
+      Resumo,
+      InfoGeraisRegulagem,
+      Tempos,
+      Pressoes,
+      Cursos,
+      TemperaturaCilindro,
+      Dosador,
+      Injecao,
+      Recalque,
+      Dosagem,
+      ProgramacaoMachos,
+      BicoCamaraQuente,
+      Sequenciador,
+    } = data.body;
+    const images = {
+      img_produto: data.files.img_produto
+        ? data.files.img_produto[0].filename
+        : data.body.img_produto,
+      img_camara: data.files.img_camara
+        ? data.files.img_camara[0].filename
+        : data.body.img_camara,
+    };
+    const findByFtiPresent = await this.prisma.fti.findFirst({
+      include: {
+        Homologacao: true,
+      },
+      orderBy: {
+        id: 'desc',
+      },
+      take: 1,
+      where: {
+        AND: {
+          cod_molde: data.mold,
+          cod_produto: data.cod_product,
+        },
+      },
+    });
+    if (!findByFtiPresent) {
+      throw new HttpException(`insistent fti`, HttpStatus.BAD_REQUEST);
+    }
+    if (findByFtiPresent.Homologacao[0].statusId === 1) {
+      throw new HttpException(
+        `Fti in approval process`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    await this.prisma.homologacao.update({
+      data: {
+        statusId: 4,
+      },
+      where: {
+        id: findByFtiPresent.id,
+      },
+    });
+    await this.prisma.fti.create({
+      data: {
+        cliente,
+        cod_molde,
+        cod_produto,
+        cor,
+        maquina,
+        materia_prima,
+        modelo,
+        pigmento,
+        produto,
+        qtd_cavidade: qtd_cavidade,
+        Homologacao: {
+          create: {
+            user_created: data.user.user.user,
+            statusId: 1,
+            revisao: findByFtiPresent.Homologacao[0].revisao + 1,
+          },
+        },
+        Dimensao: {
+          createMany: {
+            data: JSON.parse(Dimensao as any),
+          },
+        },
+        Estufagem: {
+          createMany: {
+            data: JSON.parse(Estufagem as any),
+          },
+        },
+        DispositivoSeguranca: {
+          createMany: {
+            data: JSON.parse(DispositivoSeguranca as any),
+          },
+        },
+        RefrigeracaoMolde: {
+          createMany: {
+            data: JSON.parse(RefrigeracaoMolde as any),
+          },
+        },
+        Cavidade: {
+          createMany: {
+            data: JSON.parse(Cavidade as any),
+          },
+        },
+        AquecedorAgua: {
+          create: {
+            check_aquecedor: AquecedorAgua as any,
+          },
+        },
+        Resumo: {
+          createMany: {
+            data: JSON.parse(Resumo as any),
+          },
+        },
+        InfoGeraisRegulagem: {
+          createMany: {
+            data: JSON.parse(InfoGeraisRegulagem as any),
+          },
+        },
+        Tempos: {
+          createMany: {
+            data: JSON.parse(Tempos as any),
+          },
+        },
+        Pressoes: {
+          createMany: {
+            data: JSON.parse(Pressoes as any),
+          },
+        },
+        Cursos: {
+          createMany: {
+            data: JSON.parse(Cursos as any),
+          },
+        },
+        TemperaturaCilindro: {
+          createMany: {
+            data: JSON.parse(TemperaturaCilindro as any),
+          },
+        },
+        Dosador: {
+          createMany: {
+            data: JSON.parse(Dosador as any),
+          },
+        },
+        Injecao: {
+          createMany: {
+            data: {
+              injecao: Injecao,
+            },
+          },
+        },
+        Recalque: {
+          create: {
+            recalque: Recalque,
+          },
+        },
+        Dosagem: {
+          create: {
+            dosagem: Dosagem,
+          },
+        },
+        ProgramacaoMachos: {
+          createMany: {
+            data: JSON.parse(ProgramacaoMachos as any),
+          },
+        },
+        BicoCamaraQuente: {
+          createMany: {
+            data: JSON.parse(BicoCamaraQuente as any),
+          },
+        },
+        Sequenciador: {
+          createMany: {
+            data: JSON.parse(Sequenciador as any),
+          },
+        },
+        Imagens: {
+          createMany: {
+            data: images,
+          },
+        },
+      },
+    });
+  }
+
+  async sendEmail(ftiId: number, email: string, name: string) {
+    await this.mailerService.sendMail({
+      to: email,
+      subject: `FTI ${ftiId} aguardando homologação`,
+      template: './test.pug',
+      context: {
+        name: name,
       },
     });
   }
