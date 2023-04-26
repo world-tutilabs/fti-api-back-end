@@ -707,7 +707,7 @@ export class FtiService implements FtiRepository {
       where: {
         AND: {
           cod_molde: data.mold,
-          cod_produto: data.cod_product,
+          cod_produto: data.product_cod,
         },
       },
     });

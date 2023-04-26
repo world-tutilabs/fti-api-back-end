@@ -137,11 +137,11 @@ export class FtiController {
     const result = await this.ftiService.findOne(+id);
     if (!result) throw new NotFoundException(`id ${id} not found`);
 
-    return this.ftiService.update(+id, data, files, user); //TODO: update
+    return this.ftiService.update(+id, data, files, user);
   }
 
-  @Post('versioning/:mold&&:product')
-  @ApiOperation({ summary: `Versiona FTI por molde e produto` })
+  @Post('versioning/:mold&&:product_cod')
+  @ApiOperation({ summary: `Versiona FTI por molde e código do produto` })
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileFieldsInterceptor(
@@ -153,12 +153,12 @@ export class FtiController {
     ),
   )
   async versioning(
-    @Param() { mold, cod_product }: VersioningParam,
+    @Param() { mold, product_cod }: VersioningParam,
     @Body() data: CreateFtiDto,
     @UploadedFiles() files: any,
     @Req() user: any,
   ) {
-    const newData = { mold, cod_product, body: data, files, user };
+    const newData = { mold, product_cod, body: data, files, user };
     await this.ftiService.versioning(newData);
   }
 }
