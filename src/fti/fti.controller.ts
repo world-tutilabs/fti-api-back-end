@@ -28,6 +28,7 @@ import {
   FindHistoryParams,
   HomologDto,
 } from './types';
+import { ReqUserDto } from './types/dto/req-user-fti.dto';
 
 @Controller('fti')
 @ApiBearerAuth()
@@ -92,8 +93,12 @@ export class FtiController {
 
   @Put('homologation/:id')
   @ApiOperation({ summary: 'Homologa FTI específica' })
-  async homologation(@Req() data: HomologDto) {
-    return this.ftiService.homolog(data);
+  async homologation(
+    @Param() id: FindByIdParam,
+    @Req() user: ReqUserDto,
+    @Body() body: HomologDto,
+  ) {
+    return this.ftiService.homolog(+id.id, user, body);
   }
 
   @Patch('cancel/:id')
@@ -149,12 +154,12 @@ export class FtiController {
     ),
   )
   async versioning(
-    @Param() { mold, product }: VersioningParam,
+    @Param() { mold, cod_product }: VersioningParam,
     @Body() data: CreateFtiDto,
     @UploadedFiles() files: any,
     @Req() user: any,
   ) {
-    const newData = { mold, product, body: data, files, user };
+    const newData = { mold, cod_product, body: data, files, user };
     await this.ftiService.versioning(newData);
   }
 }

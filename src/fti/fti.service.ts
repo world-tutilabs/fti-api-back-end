@@ -6,6 +6,7 @@ import { CreateFtiDto, HomologDto } from './types';
 import { MailerService } from '@nestjs-modules/mailer/dist/mailer.service';
 import * as fs from 'fs';
 import { VersioningParam } from './types/params/versioning';
+import { ReqUserDto } from './types/dto/req-user-fti.dto';
 
 @Injectable()
 export class FtiService implements FtiRepository {
@@ -64,7 +65,7 @@ export class FtiService implements FtiRepository {
       where: {
         AND: {
           cod_molde: data.mold,
-          cod_produto: data.product,
+          cod_produto: data.cod_product,
         },
       },
     });
@@ -235,15 +236,16 @@ export class FtiService implements FtiRepository {
     });
   }
 
-  async homolog(data: HomologDto): Promise<void> {
-    const { Comentario, status } = data.body;
+  async homolog(id: number, user: ReqUserDto, body: HomologDto): Promise<void> {
+    const { Comentario, status } = body;
+
     await this.prisma.homologacao.updateMany({
       data: {
-        user_homologation: { user: data.user.user, Comentario },
-        statusId: Number(status),
+        user_homologation: { user: user.user, Comentario },
+        statusId: status,
       },
       where: {
-        ftiId: Number(data.params.id),
+        ftiId: id,
       },
     });
   }

@@ -1,5 +1,13 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber, IsString, Max, Min } from 'class-validator';
+
 export class HomologDto {
-  user: any;
-  params: { id: number };
-  body: { status: number; Comentario: string };
+  @ApiProperty({ example: '2 para Aprovar ou 3 para Reprovar' })
+  @Min(2)
+  @Max(3)
+  @IsNumber()
+  status: number;
+  @ApiProperty({ example: 'Aprovado com louvor ~refs.', description: 'teste' })
+  @IsString()
+  Comentario: string;
 }
