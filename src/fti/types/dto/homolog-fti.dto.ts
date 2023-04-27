@@ -7,7 +7,7 @@ export class HomologDto {
   @Max(3)
   @IsNumber()
   status: number;
-  @ApiProperty({ example: 'Aprovado com louvor ~refs.', description: 'teste' })
+  @ApiProperty({ example: 'Aprovado com louvor ~refs.' })
   @IsString()
   Comentario: string;
 }
