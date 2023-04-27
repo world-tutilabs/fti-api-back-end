@@ -132,7 +132,7 @@ export class FtiController {
     @Param() { id }: FindByIdParam,
     @Body() data: CreateFtiDto,
     @UploadedFiles() files: any,
-    @Req() user: any,
+    @Req() { user }: any,
   ) {
     const result = await this.ftiService.findOne(+id);
     if (!result) throw new NotFoundException(`id ${id} not found`);

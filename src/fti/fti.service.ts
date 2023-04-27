@@ -1,5 +1,10 @@
 import { PrismaService } from '../prisma/prisma.service';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  HttpStatus,
+  BadRequestException,
+} from '@nestjs/common';
 import { Fti } from '@prisma/client';
 import { FtiRepository } from './repository/fti-repository';
 import { CreateFtiDto, HomologDto, getAllFtiDto } from './types';
@@ -421,6 +426,17 @@ export class FtiService implements FtiRepository {
   }
 
   async cancelOne(id: number): Promise<Partial<Fti>> {
+    const fti = await this.prisma.fti.findFirst({
+      where: { id },
+      select: { Homologacao: { select: { statusId: true, revisao: true } } },
+    });
+
+    if (fti.Homologacao[0].statusId !== 1)
+      throw new BadRequestException(`Fti id: ${id} is not on approval`);
+
+    if (fti.Homologacao[0].revisao === 0)
+      throw new BadRequestException(`Fti id: ${id} is not versioned`);
+
     return await this.prisma.homologacao.update({
       where: { id },
       data: {
@@ -472,6 +488,14 @@ export class FtiService implements FtiRepository {
   }
 
   async update(id: number, data: CreateFtiDto, files: any, user: any) {
+    const fti = await this.prisma.fti.findFirst({
+      where: { id },
+      select: { Homologacao: { select: { statusId: true } } },
+    });
+
+    if (fti.Homologacao[0].statusId !== 3)
+      throw new BadRequestException(`Fti id: ${id} is not Reproved!`);
+
     if (files.img_produto) {
       const imgProduto = await this.prisma.imagens.findFirst({
         where: {
@@ -580,6 +604,10 @@ export class FtiService implements FtiRepository {
           update: {
             where: { id },
             data: {
+              user_created: {
+                user: user.user,
+                Comentario: data.Comentario,
+              },
               statusId: 1,
             },
           },
