@@ -55,6 +55,21 @@ export class FtiController {
     return await this.ftiService.listAllByStatus(newData);
   }
 
+  @Get(':id')
+  @ApiOperation({ summary: 'Busca FTI específica' })
+  async findOne(@Param() { id }: FindByIdParam) {
+    const result = await this.ftiService.findOne(+id);
+    if (!result) throw new NotFoundException(`FTI ${id} Not Found`);
+
+    return result;
+  }
+
+  @Get('/history/:molde')
+  @ApiOperation({ summary: `Lista Histórico de FTI do respectivo molde` })
+  async history(@Param() { molde }: FindHistoryParams) {
+    return await this.ftiService.history(molde);
+  }
+
   @Post('create')
   @ApiOperation({ summary: 'Cria uma nova FTI' })
   @ApiConsumes('multipart/form-data')
@@ -82,15 +97,6 @@ export class FtiController {
     return this.ftiService.create(newData);
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Busca FTI específica' })
-  async findOne(@Param() { id }: FindByIdParam) {
-    const result = await this.ftiService.findOne(+id);
-    if (!result) throw new NotFoundException(`FTI ${id} Not Found`);
-
-    return result;
-  }
-
   @Put('homologation/:id')
   @ApiOperation({ summary: 'Homologa FTI específica' })
   async homologation(
@@ -99,21 +105,6 @@ export class FtiController {
     @Body() body: HomologDto,
   ) {
     return this.ftiService.homolog(+id, user, body);
-  }
-
-  @Patch('cancel/:id')
-  @ApiOperation({ summary: `Altera o Status da FTI para 'Cancelada'` })
-  @HttpCode(204)
-  async cancelOne(@Param() { id }: FindByIdParam) {
-    const result = await this.ftiService.findOne(+id);
-    if (!result) throw new NotFoundException(`FTI ${id} Not Found`);
-    return this.ftiService.cancelOne(+id);
-  }
-
-  @Get('/history/:molde')
-  @ApiOperation({ summary: `Lista Histórico de FTI do respectivo molde` })
-  async history(@Param() { molde }: FindHistoryParams) {
-    return await this.ftiService.history(molde);
   }
 
   @Put('update/:id')
@@ -160,5 +151,14 @@ export class FtiController {
   ) {
     const newData = { mold, product_cod, body: data, files, user };
     await this.ftiService.versioning(newData);
+  }
+
+  @Patch('cancel/:id')
+  @ApiOperation({ summary: `Altera o Status da FTI para 'Cancelada'` })
+  @HttpCode(204)
+  async cancelOne(@Param() { id }: FindByIdParam) {
+    const result = await this.ftiService.findOne(+id);
+    if (!result) throw new NotFoundException(`FTI ${id} Not Found`);
+    return this.ftiService.cancelOne(+id);
   }
 }
