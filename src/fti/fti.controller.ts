@@ -64,7 +64,7 @@ export class FtiController {
     return result;
   }
 
-  @Get('/history/:molde')
+  @Get('/history/:mold')
   @ApiOperation({ summary: `Lista Histórico de FTI do respectivo molde` })
   async history(@Param() { molde }: FindHistoryParams) {
     return await this.ftiService.history(molde);
