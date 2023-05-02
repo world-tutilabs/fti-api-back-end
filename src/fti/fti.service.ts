@@ -46,6 +46,8 @@ export class FtiService implements FtiRepository {
         Homologacao: {
           select: {
             revisao: true,
+            user_created: true,
+            user_homologation: true,
             Status: {
               select: { descricao: true },
             },
