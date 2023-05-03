@@ -8,11 +8,6 @@
         "include": "**/mail/templates/**",
         "outDir": "dist/src/mail",
         "watchAssets": true
-      },
-      {
-        "include": "../uploads",
-        "outDir": "dist/uploads",
-        "watchAssets": true
       }
     ],
     "watchAssets": true,

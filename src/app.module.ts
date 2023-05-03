@@ -14,7 +14,7 @@ import { join } from 'path';
       isGlobal: true,
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, './dist/uploads'),
+      rootPath: join(__dirname, '../uploads'),
     }),
     FtiModule,
     MailModule,
