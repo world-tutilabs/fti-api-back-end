@@ -61,12 +61,12 @@ export class CreateFtiDto implements Partial<Fti> {
   maquina: string;
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ example: 'Matéria_prima_teste' })
-  materia_prima: string;
+  @ApiProperty({ example: 'cod_materia_teste' })
+  cod_materia_prima: string;
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ example: 'pigmento_teste' })
-  pigmento: string;
+  @ApiProperty({ example: 'desc_materia_prima teste' })
+  desc_materia_prima: string;
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ example: 'cor_teste' })
