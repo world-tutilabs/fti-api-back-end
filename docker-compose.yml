@@ -32,12 +32,12 @@ services:
     networks:
       - nw_new_api_fti   
   redis-fti:
-    container_name: cache-redis-fti
+    container_name: redis-fti
     image: redis
-    ports:
-      - 6379:6379
     volumes:
       - ./redis:/data
+    networks:
+      - nw_new_api_fti
 networks:
   nw_new_api_fti:
     driver: bridge
