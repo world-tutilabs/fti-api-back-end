@@ -485,7 +485,7 @@ export class FtiService implements FtiRepository {
       });
 
       fs.unlink(
-        process.cwd() + '/uploads/' + imgProduto.img_produto,
+        process.cwd() + '/dist/uploads/' + imgProduto.img_produto,
         function (err) {
           if (err) throw err;
           console.log('File deleted!');
@@ -502,7 +502,7 @@ export class FtiService implements FtiRepository {
       });
 
       fs.unlink(
-        process.cwd() + '/uploads/' + imgCamara.img_camara,
+        process.cwd() + '/dist/uploads/' + imgCamara.img_camara,
         function (err) {
           if (err) throw err;
           console.log('File deleted!');
