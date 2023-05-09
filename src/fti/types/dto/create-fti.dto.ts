@@ -156,13 +156,13 @@ export class CreateFtiDto implements Partial<Fti> {
   @IsJSON()
   @IsNotEmpty()
   @ApiProperty({
-    example: '',
+    example: '[{"check_programacao_machos":"true","check_posicao":"true","check_tempo":"true","macho":[[{"tempo":{"saida":"456","entrada":""}},{"posicao":{"saida":"645","entrada":"546"}},{"pressao":{"saida":"31","entrada":"321"}},{"velocidade":{"saida":"321","entrada":"468"}}],[{"tempo":{"saida":"213","entrada":"456"}},{"posicao":{"saida":"654","entrada":"64"}},{"pressao":{"saida":"465","entrada":"213"}},{"velocidade":{"saida":"123","entrada":"231"}}],[{"tempo":{"saida":"79","entrada":"3128"}},{"posicao":{"saida":"654","entrada":"8975"}},{"pressao":{"saida":"65","entrada":"654"}},{"velocidade":{"saida":"654","entrada":"654"}}],[{"tempo":{"saida":"465","entrada":"654"}},{"posicao":{"saida":"789","entrada":"654"}},{"pressao":{"saida":"45","entrada":"231"}},{"velocidade":{"saida":"3","entrada":"789"}}]]}]',
   })
   ProgramacaoMachos: CreateProgramacaoMachosDto;
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '[{"check_programacao_machos":"true","check_posicao":"true","check_tempo":"true","macho":[[{"tempo":{"saida":"456","entrada":""}},{"posicao":{"saida":"645","entrada":"546"}},{"pressao":{"saida":"31","entrada":"321"}},{"velocidade":{"saida":"321","entrada":"468"}}],[{"tempo":{"saida":"213","entrada":"456"}},{"posicao":{"saida":"654","entrada":"64"}},{"pressao":{"saida":"465","entrada":"213"}},{"velocidade":{"saida":"123","entrada":"231"}}],[{"tempo":{"saida":"79","entrada":"3128"}},{"posicao":{"saida":"654","entrada":"8975"}},{"pressao":{"saida":"65","entrada":"654"}},{"velocidade":{"saida":"654","entrada":"654"}}],[{"tempo":{"saida":"465","entrada":"654"}},{"posicao":{"saida":"789","entrada":"654"}},{"pressao":{"saida":"45","entrada":"231"}},{"velocidade":{"saida":"3","entrada":"789"}}]]}]',
+      '{"velocidade": ["1", "2"], "pressao": ["1", "2"], "tempo": ["1"], "posicao": ["1"]}',
   })
   Recalque: CreateRecalqueDto;
   @IsJSON()
