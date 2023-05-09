@@ -466,13 +466,14 @@ export class FtiService implements FtiRepository {
   }
 
   async update(id: number, data: CreateFtiDto, files: any, user: any) {
+    const { Comentario } = data;
     const fti = await this.prisma.fti.findFirst({
       where: { id },
       select: { Homologacao: { select: { statusId: true } } },
     });
 
     if (fti.Homologacao[0].statusId !== 3)
-      throw new BadRequestException(`Fti id: ${id} is not Reproved!`);
+      throw new BadRequestException(`Fti id: ${id} is not Reproveds!`);
 
     if (files.img_produto) {
       const imgProduto = await this.prisma.imagens.findFirst({
@@ -524,14 +525,14 @@ export class FtiService implements FtiRepository {
         qtd_cavidade: data.qtd_cavidade,
         updatedAt: new Date(),
         AquecedorAgua: {
-          update: {
-            where: { id },
-            data: { check_aquecedor: data.AquecedorAgua as any },
+          deleteMany: {},
+          create: {
+            check_aquecedor: data.AquecedorAgua as any,
           },
         },
         BicoCamaraQuente: {
-          update: {
-            where: { id },
+          deleteMany: {},
+          createMany: {
             data: JSON.parse(data.BicoCamaraQuente as any),
           },
         },
@@ -566,9 +567,9 @@ export class FtiService implements FtiRepository {
           },
         },
         Dosagem: {
-          update: {
-            where: { id },
-            data: { dosagem: data.Dosagem },
+          deleteMany: {},
+          create: {
+            dosagem: data.Dosagem,
           },
         },
         Estufagem: {
@@ -578,29 +579,34 @@ export class FtiService implements FtiRepository {
           },
         },
         Homologacao: {
-          update: {
-            where: { id },
-            data: {
-              user_created: {
-                user: user.user,
-                Comentario: data.Comentario,
-              },
-              statusId: 1,
-            },
+          deleteMany: {},
+          create: {
+            user_created: { user, Comentario },
+            statusId: 1,
+            revisao: 0,
           },
         },
+        // Imagens: {
+        //   update: {
+        //     where: { id },
+        //     data: {
+        //       img_produto:
+        //         files.img_produto !== undefined
+        //           ? files.img_produto[0].filename
+        //           : undefined,
+        //       img_camara:
+        //         files.img_camara !== undefined
+        //           ? files.img_camara[0].filename
+        //           : undefined,
+        //     },
+        //   },
+        // },
         Imagens: {
-          update: {
-            where: { id },
+          deleteMany: {},
+          createMany: {
             data: {
-              img_produto:
-                files.img_produto !== undefined
-                  ? files.img_produto[0].filename
-                  : undefined,
-              img_camara:
-                files.img_camara !== undefined
-                  ? files.img_camara[0].filename
-                  : undefined,
+              img_camara: data.img_camara,
+              img_produto: data.img_produto,
             },
           },
         },
@@ -617,42 +623,49 @@ export class FtiService implements FtiRepository {
           },
         },
         Pressoes: {
+          deleteMany: {},
           createMany: {
             data: JSON.parse(data.Pressoes as any),
           },
         },
         ProgramacaoMachos: {
+          deleteMany: {},
           createMany: {
             data: JSON.parse(data.ProgramacaoMachos as any),
           },
         },
         Recalque: {
-          update: {
-            where: { id },
-            data: { recalque: data.Recalque },
+          deleteMany: {},
+          create: {
+            recalque: data.Recalque,
           },
         },
         RefrigeracaoMolde: {
+          deleteMany: {},
           createMany: {
             data: JSON.parse(data.RefrigeracaoMolde as any),
           },
         },
         Resumo: {
+          deleteMany: {},
           createMany: {
             data: JSON.parse(data.Resumo as any),
           },
         },
         Sequenciador: {
+          deleteMany: {},
           createMany: {
             data: JSON.parse(data.Sequenciador as any),
           },
         },
         TemperaturaCilindro: {
+          deleteMany: {},
           createMany: {
             data: JSON.parse(data.TemperaturaCilindro as any),
           },
         },
         Tempos: {
+          deleteMany: {},
           createMany: {
             data: JSON.parse(data.Tempos as any),
           },
@@ -746,7 +759,7 @@ export class FtiService implements FtiRepository {
         qtd_cavidade: qtd_cavidade,
         Homologacao: {
           create: {
-            user_created: data.user.user.user,
+            user_created: data.user.user,
             statusId: 1,
             revisao: findByFtiPresent.Homologacao[0].revisao + 1,
           },
