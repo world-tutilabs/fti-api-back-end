@@ -42,6 +42,7 @@
     "redis": "^4.6.6",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
+    "node": "16.14",
     "swagger-themes": "^1.2.27",
     "uuid": "^9.0.0"
   },
