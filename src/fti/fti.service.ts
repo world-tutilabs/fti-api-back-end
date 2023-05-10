@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Fti } from '@prisma/client';
 import { FtiRepository } from './repository/fti-repository';
-import { CreateFtiDto, HomologDto, getAllFtiDto } from './types';
+import { CreateFtiDto, HomologDto, UpdateFtiDto } from './types';
 import { MailerService } from '@nestjs-modules/mailer/dist/mailer.service';
 import * as fs from 'fs';
 import { VersioningParam } from './types/params/versioning';
@@ -465,7 +465,7 @@ export class FtiService implements FtiRepository {
     });
   }
 
-  async update(id: number, data: CreateFtiDto, files: any, user: any) {
+  async update(id: number, data: UpdateFtiDto, files: any, user: any) {
     const { Comentario } = data;
     const fti = await this.prisma.fti.findFirst({
       where: { id },
@@ -473,7 +473,7 @@ export class FtiService implements FtiRepository {
     });
 
     if (fti.Homologacao[0].statusId !== 3)
-      throw new BadRequestException(`Fti id: ${id} is not Reproveds!`);
+      throw new BadRequestException(`Fti id: ${id} is not Reproved!`);
 
     if (files.img_produto) {
       const imgProduto = await this.prisma.imagens.findFirst({
@@ -704,6 +704,8 @@ export class FtiService implements FtiRepository {
       ProgramacaoMachos,
       BicoCamaraQuente,
       Sequenciador,
+      Comentario,
+      // user,
     } = data.body;
     const images = {
       img_produto: data.files.img_produto
@@ -738,6 +740,8 @@ export class FtiService implements FtiRepository {
       );
     }
 
+    const { user } = data.user.user;
+
     await this.prisma.homologacao.update({
       data: {
         statusId: 4,
@@ -759,7 +763,7 @@ export class FtiService implements FtiRepository {
         qtd_cavidade: qtd_cavidade,
         Homologacao: {
           create: {
-            user_created: data.user.user,
+            user_created: { user, Comentario },
             statusId: 1,
             revisao: findByFtiPresent.Homologacao[0].revisao + 1,
           },

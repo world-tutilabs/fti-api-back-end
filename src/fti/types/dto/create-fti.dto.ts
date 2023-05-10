@@ -23,21 +23,14 @@ import {
   TemperaturaCilindro,
   Tempos,
 } from '@prisma/client';
-import { Type } from 'class-transformer';
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  ValidateNested,
-  IsJSON,
-} from 'class-validator';
+import { IsNotEmpty, IsString, IsJSON } from 'class-validator';
 
 export class CreateFtiDto implements Partial<Fti> {
   @ApiHideProperty()
   user: any;
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ example: 'Argola C/ Preceito' })
+  @ApiProperty({ example: 'LIGHT COVER FGA2232CLB/TCH2/TIB' })
   produto: string;
   @IsString()
   @IsNotEmpty()
@@ -49,26 +42,29 @@ export class CreateFtiDto implements Partial<Fti> {
   cod_molde: string;
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ example: 'Orient' })
+  @ApiProperty({ example: 'technicolor' })
   cliente: string;
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ example: 'Modelo_teste' })
+  @ApiProperty({ example: 'XXXX' })
   modelo: string;
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ example: 'Maquina_teste' })
+  @ApiProperty({ example: 'Máquina X' })
   maquina: string;
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ example: 'cod_materia_prima & descricao_materia_prima' })
+  @ApiProperty({
+    example:
+      '5.0.24.60.0660 - PP NATURAL CP442 - BRASKEM 95%+PIG. GRAN. P/ PP PRETO MBP 1060 - COLORTECH 5%',
+  })
   materia_prima: string;
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ example: 'cor_teste' })
+  @ApiProperty({ example: 'XXXX' })
   cor: string;
   @IsNotEmpty()
-  @ApiProperty({ example: '7' })
+  @ApiProperty({ example: '10' })
   qtd_cavidade: string;
   @ApiHideProperty()
   Homologacao: CreateHomologacaoDto;
@@ -80,54 +76,55 @@ export class CreateFtiDto implements Partial<Fti> {
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '{"check_bico_camara_quente": "true","check_tipos_temperatura": "k","temperatura_programada": ["1", "2"]}',
+      '{"check_bico_camara_quente":"true","check_tipos_temperatura":"k","temperatura_programada":["1","2","3","4","5","6","7","8","9","0","8","3","3","3","3","3","3","3","3","3","4","3","3","3","3"]}',
   })
   BicoCamaraQuente: CreateBicoCamaraQuenteDto;
   @IsJSON()
   @IsNotEmpty()
   @ApiProperty({
-    example: '[{"cavidade": 1},{"cavidade": 2},{"cavidade": 3}]',
+    example:
+      '[{"cavidade":1},{"cavidade":2},{"cavidade":3},{"cavidade":4},{"cavidade":5},{"cavidade":6},{"cavidade":7},{"cavidade":8},{"cavidade":9},{"cavidade":10}]',
   })
   Cavidade: CreateCavidadeDto;
   @IsJSON()
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '{"curso_abertura": "1", "curso_descompressao": "2", "tempo_recalque": "3", "curso_avanco_extrator": "1", "inicio_protecao_molde": "2"}',
+      '{"curso_abertura":"3","curso_descompressao":"4","tempo_recalque":"0","curso_avanco_extrator":"12","inicio_protecao_molde":"3"}',
   })
   Cursos: CreateCursosDto;
   @IsJSON()
   @IsNotEmpty()
   @ApiProperty({
-    example: '{"altura": "1", "comprimento": "1," ,"largura": "1"}',
+    example: '{"altura":"10","comprimento":"10","largura":"10"}',
   })
   Dimensao: CreateDimensaoDto;
   @IsJSON()
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '{"check_dispositivo_seg": "true","sensor": "false", "micro_sw": "true", "fim_curso": "true"}',
+      '{"check_dispositivo_seg":"true","sensor":"true","micro_sw":"true","fim_curso":"true"}',
   })
   DispositivoSeguranca: CreateDispositivoSeguranca;
   @IsJSON()
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '{"check_dosador": "true", "velocidade_dosagem": "1", "tempo_dosagem": "2"}',
+      '{"check_dosador":"true","velocidade_dosagem":"4","tempo_dosagem":"4"}',
   })
   Dosador: CreateDosadorDto;
   @IsJSON()
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '{"velocidade": ["1"], "contrapressao": ["2"], "pressao_de_dosagem": ["1"], "posicao": ["2"], "tempo_real": ["1"]}',
+      '{"velocidade":["3","3","3","","","","","",""],"contrapressao":["3","3","3","","","","","",""],"pressao_de_dosagem":["3","3","333","","","","","",""],"posicao":["3","3","333","","","","","",""],"tempo_real":["3","3","3","","","","","",""]}',
   })
   Dosagem: CreateDosagemDto;
   @IsJSON()
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '{"check_estufagem": "true", "temperatura_ini": "1", "temperatura_final": "1", "tempo": "2"}',
+      '{"check_estufagem":"true","temperatura_ini":"4","temperatura_final":"3","tempo":"4"}',
   })
   Estufagem: CreateEstufagemDto;
   @ApiHideProperty()
@@ -136,67 +133,68 @@ export class CreateFtiDto implements Partial<Fti> {
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '{"bucha_injecao": "1", "bico_injecao": "2", "prog_injecao": "1", "modo": "1", "ciclo_total": "2", "producao_horaria": "2"}',
+      '{"bucha_injecao":"2","bico_injecao":"3","prog_injecao":"4","modo":"","ciclo_total":"5","producao_horaria":"6"}',
   })
   InfoGeraisRegulagem: CreateInfoGeraisRegulagemDto;
   @IsJSON()
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '{"injecao_velocidade": ["1","2","3"], "injecao_pressao": ["1", "1", "2"], "injecao_posicao": ["3","4"]}',
+      '{"injecao_velocidade":["1","1","1","1","1","","","",""],"injecao_pressao":["1","1","1","1","1","","","",""],"injecao_posicao":["1","1","1","1","1","","","",""]}',
   })
   Injecao: CreateInjecaoDto;
   @IsJSON()
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '{"pressao_media": "1", "pressao_travamento": "1", "pressao_avanco": "1", "pressao_recuo": "2", "pressao_descompressao": "2", "peso_galho": "2"}',
+      '{"pressao_media":"3","pressao_travamento":"3","pressao_avanco":"3","pressao_recuo":"33","pressao_descompressao":"3","peso_galho":"0"}',
   })
   Pressoes: CreatePressoesDto;
   @IsJSON()
   @IsNotEmpty()
   @ApiProperty({
-    example: '[{"check_programacao_machos":"true","check_posicao":"true","check_tempo":"true","macho":[[{"tempo":{"saida":"456","entrada":""}},{"posicao":{"saida":"645","entrada":"546"}},{"pressao":{"saida":"31","entrada":"321"}},{"velocidade":{"saida":"321","entrada":"468"}}],[{"tempo":{"saida":"213","entrada":"456"}},{"posicao":{"saida":"654","entrada":"64"}},{"pressao":{"saida":"465","entrada":"213"}},{"velocidade":{"saida":"123","entrada":"231"}}],[{"tempo":{"saida":"79","entrada":"3128"}},{"posicao":{"saida":"654","entrada":"8975"}},{"pressao":{"saida":"65","entrada":"654"}},{"velocidade":{"saida":"654","entrada":"654"}}],[{"tempo":{"saida":"465","entrada":"654"}},{"posicao":{"saida":"789","entrada":"654"}},{"pressao":{"saida":"45","entrada":"231"}},{"velocidade":{"saida":"3","entrada":"789"}}]]}]',
+    example:
+      '{"check_programacao_machos":"true","check_posicao":"true","check_tempo":"true","macho":[[{"tempo":{"entrada":"3","saida":"3"}},{"posicao":{"entrada":"3","saida":"3"}},{"pressao":{"entrada":"3","saida":"3"}},{"velocidade":{"entrada":"3","saida":"3"}}],[{"tempo":{"entrada":"3","saida":"3"}},{"posicao":{"entrada":"3","saida":"3"}},{"pressao":{"entrada":"3","saida":"3"}},{"velocidade":{"entrada":"3","saida":"3"}}],[{"tempo":{"entrada":"3","saida":"3"}},{"posicao":{"entrada":"3","saida":"3"}},{"pressao":{"entrada":"3","saida":"3"}},{"velocidade":{"entrada":"3","saida":"3"}}],[{"tempo":{"entrada":"3","saida":"3"}},{"posicao":{"entrada":"3","saida":"3"}},{"pressao":{"entrada":"3","saida":"3"}},{"velocidade":{"entrada":"3","saida":"3"}}]]}',
   })
   ProgramacaoMachos: CreateProgramacaoMachosDto;
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '{"velocidade": ["1", "2"], "pressao": ["1", "2"], "tempo": ["1"], "posicao": ["1"]}',
+      '{"velocidade":["3","3","3","3","","","","",""],"pressao":["3","3","3","33","","","","",""],"tempo":["3","3","3","3","","","","",""],"posicao":["3","3","3","3","","","","",""]}',
   })
   Recalque: CreateRecalqueDto;
   @IsJSON()
   @IsNotEmpty()
   @ApiProperty({
-    example: '{"movel": "1", "fixo": "1", "flutuante": "2", "gaveta": "1"}',
+    example: '{"movel":"4","fixo":"3","flutuante":"4","gaveta":"4"}',
   })
   RefrigeracaoMolde: CreateRefrigeracaoMoldeDto;
   @IsJSON()
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '{"peso_total_cavidade": "1" , "peso_total_injecao": "2", "peso_medio_bruto": "2" , "peso_medio_liquido": "1", "peso_galho": "1", "outros": "outros teste"}',
+      '{"peso_total_cavidade":"55","peso_total_injecao":"122","peso_medio_bruto":"12.2","peso_medio_liquido":"5.5","peso_galho":"67"}',
   })
   Resumo: CreateResumoDto;
   @IsJSON()
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '{"check_sequenciador": "true", "sequenciador": [{"bico": "1", "open": "1", "modo": "1"}]}',
+      '{"check_sequenciador":"true","sequenciador":[{"bico":"1","open":"4","modo":"5"},{"bico":"2","open":"3","modo":"4"},{"bico":"3","open":"44","modo":"4"},{"bico":"4","open":"4","modo":"4"},{"bico":"5","open":"4","modo":"4"},{"bico":"6","open":"4","modo":"5"},{"bico":"7","open":"5","modo":"434"},{"bico":"8","open":"34","modo":"34"}]}',
   })
   Sequenciador: CreateSequenciadorDto;
   @IsJSON()
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '{"bico": "1", "zona_1": "1", "zona_2": "2", "zona_3": "2", "zona_3": "2", "zona_4": "2", "zona_5": "2", "zona_6": "2", "zona_7": "2"}',
+      '{"bico":"3","zona_1":"3","zona_2":"4","zona_3":"3","zona_4":"2","zona_5":"3","zona_6":"4","zona_7":"4"}',
   })
   TemperaturaCilindro: CreateTemperaturaCilindroDto;
   @IsJSON()
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '{"tempo_fechamento": "1", "tempo_injecao": "2", "tempo_recalque": "1", "tempo_resfriamento": "2", "tempo_abertura_molde": "3", "tempo_extracao": "1", "tempo_retirada_remocao_peca": "2", "reciclo_outros": "1"}',
+      '{"tempo_fechamento":"12","tempo_injecao":"13","tempo_recalque":"14","tempo_resfriamento":"33","tempo_abertura_molde":"22","tempo_extracao":"33","tempo_retirada_remocao_peca":"44","reciclo_outros":"44"}',
   })
   Tempos: CreateTemposDto;
   @ApiProperty({ type: 'string', format: 'binary', required: true })

@@ -27,6 +27,7 @@ import {
   FindByStatusIdParam,
   FindHistoryParams,
   HomologDto,
+  UpdateFtiDto,
 } from './types';
 import { ReqUserDto } from './types/dto/req-user-fti.dto';
 
@@ -121,14 +122,14 @@ export class FtiController {
   @ApiConsumes('multipart/form-data')
   async update(
     @Param() { id }: FindByIdParam,
-    @Body() data: CreateFtiDto,
+    @Body() data: UpdateFtiDto,
     @UploadedFiles() files: any,
     @Req() { user }: any,
   ) {
     const result = await this.ftiService.findOne(+id);
     if (!result) throw new NotFoundException(`id ${id} not found`);
 
-    return this.ftiService.update(+id, data, files, user);
+    return this.ftiService.update(+id, data, files, user.user);
   }
 
   @Post('versioning/:mold&&:product_cod')
@@ -145,7 +146,7 @@ export class FtiController {
   )
   async versioning(
     @Param() { mold, product_cod }: VersioningParam,
-    @Body() data: CreateFtiDto,
+    @Body() data: UpdateFtiDto,
     @UploadedFiles() files: any,
     @Req() user: any,
   ) {
