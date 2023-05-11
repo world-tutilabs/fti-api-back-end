@@ -910,7 +910,10 @@ export class FtiService implements FtiRepository {
   async cancelOne(id: number): Promise<Partial<Fti>> {
     const fti = await this.prisma.fti.findFirst({
       where: { id },
-      select: { Homologacao: { select: { statusId: true, revisao: true } } },
+      select: {
+        id: true,
+        Homologacao: { select: { id: true, statusId: true, revisao: true } },
+      },
     });
 
     if (fti.Homologacao[0].statusId !== 1)
@@ -919,22 +922,31 @@ export class FtiService implements FtiRepository {
     if (fti.Homologacao[0].revisao === 0)
       throw new BadRequestException(`Fti id: ${id} is not versioned`);
 
-    return await this.prisma.homologacao.update({
-      where: { id },
+    return await this.prisma.fti.update({
+      where: { id: fti.id },
       data: {
-        statusId: 5,
+        Homologacao: {
+          update: {
+            where: {
+              id: fti.Homologacao[0].id,
+            },
+            data: {
+              statusId: 5,
+            },
+          },
+        },
       },
     });
   }
 
-  async sendEmail(ftiId: number, email: string, name: string) {
-    await this.mailerService.sendMail({
-      to: email,
-      subject: `FTI ${ftiId} aguardando homologação`,
-      template: './test.pug',
-      context: {
-        name: name,
-      },
-    });
-  }
+  // async sendEmail(ftiId: number, email: string, name: string) {
+  //   await this.mailerService.sendMail({
+  //     to: email,
+  //     subject: `FTI ${ftiId} aguardando homologação`,
+  //     template: './test.pug',
+  //     context: {
+  //       name: name,
+  //     },
+  //   });
+  // }
 }
