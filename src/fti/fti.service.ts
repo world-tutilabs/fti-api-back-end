@@ -775,7 +775,6 @@ export class FtiService implements FtiRepository {
       BicoCamaraQuente,
       Sequenciador,
       Comentario,
-      // user,
     } = data.body;
     const images = {
       img_produto: data.files.img_produto
