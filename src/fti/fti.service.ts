@@ -454,6 +454,16 @@ export class FtiService implements FtiRepository {
   ): Promise<void> {
     const { Comentario, status } = body;
 
+    const fti = await this.prisma.fti.findFirst({
+      where: { id },
+      select: { Homologacao: { select: { statusId: true } } },
+    });
+
+    if (fti?.Homologacao[0]?.statusId !== 1)
+      throw new BadRequestException(
+        `Fti id: ${id} is not on Approval process!`,
+      );
+
     await this.prisma.homologacao.updateMany({
       data: {
         user_homologation: { user: user, Comentario },
@@ -466,10 +476,14 @@ export class FtiService implements FtiRepository {
   }
 
   async update(id: number, data: UpdateFtiDto, files: any, user: any) {
-    const { Comentario } = data;
     const fti = await this.prisma.fti.findFirst({
       where: { id },
-      select: { Homologacao: { select: { statusId: true } } },
+      select: {
+        Homologacao: { select: { statusId: true } },
+        Imagens: {
+          select: { id: true },
+        },
+      },
     });
 
     if (fti.Homologacao[0].statusId !== 3)
@@ -492,6 +506,22 @@ export class FtiService implements FtiRepository {
           console.log('File deleted!');
         },
       );
+
+      await this.prisma.fti.update({
+        where: {
+          id: id,
+        },
+        data: {
+          Imagens: {
+            update: {
+              where: { id: fti.Imagens[0].id },
+              data: {
+                img_produto: files.img_produto[0].filename,
+              },
+            },
+          },
+        },
+      });
     }
 
     if (files.img_camara) {
@@ -509,6 +539,22 @@ export class FtiService implements FtiRepository {
           console.log('File deleted!');
         },
       );
+
+      await this.prisma.fti.update({
+        where: {
+          id: id,
+        },
+        data: {
+          Imagens: {
+            update: {
+              where: { id: fti.Imagens[0].id },
+              data: {
+                img_camara: files.img_camara[0].filename,
+              },
+            },
+          },
+        },
+      });
     }
 
     return await this.prisma.fti.update({
@@ -581,33 +627,9 @@ export class FtiService implements FtiRepository {
         Homologacao: {
           deleteMany: {},
           create: {
-            user_created: { user, Comentario },
+            user_created: { user, Comentario: data.Comentario },
             statusId: 1,
             revisao: 0,
-          },
-        },
-        // Imagens: {
-        //   update: {
-        //     where: { id },
-        //     data: {
-        //       img_produto:
-        //         files.img_produto !== undefined
-        //           ? files.img_produto[0].filename
-        //           : undefined,
-        //       img_camara:
-        //         files.img_camara !== undefined
-        //           ? files.img_camara[0].filename
-        //           : undefined,
-        //     },
-        //   },
-        // },
-        Imagens: {
-          deleteMany: {},
-          createMany: {
-            data: {
-              img_camara: data.img_camara,
-              img_produto: data.img_produto,
-            },
           },
         },
         InfoGeraisRegulagem: {
@@ -715,6 +737,7 @@ export class FtiService implements FtiRepository {
         ? data.files.img_camara[0].filename
         : data.body.img_camara,
     };
+
     const findByFtiPresent = await this.prisma.fti.findFirst({
       include: {
         Homologacao: true,
@@ -722,34 +745,44 @@ export class FtiService implements FtiRepository {
       orderBy: {
         id: 'desc',
       },
-      take: 1,
       where: {
         AND: {
           cod_molde: data.mold,
           cod_produto: data.product_cod,
+          Homologacao: {
+            some: {
+              statusId: 2,
+            },
+          },
+        },
+      },
+      take: 1,
+    });
+
+    if (!findByFtiPresent) {
+      throw new HttpException(`FTI not found`, HttpStatus.BAD_REQUEST);
+    }
+
+    if (findByFtiPresent.Homologacao[0].statusId !== 2) {
+      throw new HttpException(`FTI is not Homologated`, HttpStatus.BAD_REQUEST);
+    }
+
+    await this.prisma.fti.update({
+      where: { id: findByFtiPresent.id },
+      data: {
+        Homologacao: {
+          update: {
+            where: {
+              id: findByFtiPresent.Homologacao[0].id,
+            },
+            data: {
+              statusId: 4,
+            },
+          },
         },
       },
     });
-    if (!findByFtiPresent) {
-      throw new HttpException(`insistent fti`, HttpStatus.BAD_REQUEST);
-    }
-    if (findByFtiPresent.Homologacao[0].statusId === 1) {
-      throw new HttpException(
-        `Fti in approval process`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
 
-    const { user } = data.user.user;
-
-    await this.prisma.homologacao.update({
-      data: {
-        statusId: 4,
-      },
-      where: {
-        id: findByFtiPresent.id,
-      },
-    });
     await this.prisma.fti.create({
       data: {
         cliente,
@@ -763,7 +796,7 @@ export class FtiService implements FtiRepository {
         qtd_cavidade: qtd_cavidade,
         Homologacao: {
           create: {
-            user_created: { user, Comentario },
+            user_created: { user: data.user.user.user, Comentario: Comentario },
             statusId: 1,
             revisao: findByFtiPresent.Homologacao[0].revisao + 1,
           },

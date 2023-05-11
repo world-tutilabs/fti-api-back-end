@@ -127,9 +127,11 @@ export class FtiController {
     @Req() { user }: any,
   ) {
     const result = await this.ftiService.findOne(+id);
-    if (!result) throw new NotFoundException(`id ${id} not found`);
+    if (!result) {
+      throw new NotFoundException(`FTI id: ${id} not found`);
+    }
 
-    return this.ftiService.update(+id, data, files, user.user);
+    return await this.ftiService.update(+id, data, files, user.user);
   }
 
   @Post('versioning/:mold&&:product_cod')
