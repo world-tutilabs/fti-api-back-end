@@ -456,13 +456,57 @@ export class FtiService implements FtiRepository {
 
     const fti = await this.prisma.fti.findFirst({
       where: { id },
-      select: { Homologacao: { select: { statusId: true } } },
+      select: {
+        id: true,
+        cod_molde: true,
+        cod_produto: true,
+        Homologacao: { select: { id: true, revisao: true, statusId: true } },
+      },
     });
 
     if (fti?.Homologacao[0]?.statusId !== 1)
       throw new BadRequestException(
         `Fti id: ${id} is not on Approval process!`,
       );
+
+    const activeFti = await this.prisma.fti.findFirst({
+      include: {
+        Homologacao: true,
+      },
+      orderBy: {
+        id: 'desc',
+      },
+      where: {
+        AND: {
+          cod_molde: fti.cod_molde,
+          cod_produto: fti.cod_produto,
+          Homologacao: {
+            some: {
+              statusId: 2,
+            },
+          },
+        },
+      },
+      take: 1,
+    });
+
+    if (fti?.Homologacao[0]?.revisao !== 0) {
+      await this.prisma.fti.update({
+        where: { id: activeFti.id },
+        data: {
+          Homologacao: {
+            update: {
+              where: {
+                id: activeFti.Homologacao[0].id,
+              },
+              data: {
+                statusId: 4,
+              },
+            },
+          },
+        },
+      });
+    }
 
     await this.prisma.homologacao.updateMany({
       data: {
@@ -766,22 +810,6 @@ export class FtiService implements FtiRepository {
     if (findByFtiPresent.Homologacao[0].statusId !== 2) {
       throw new HttpException(`FTI is not Homologated`, HttpStatus.BAD_REQUEST);
     }
-
-    await this.prisma.fti.update({
-      where: { id: findByFtiPresent.id },
-      data: {
-        Homologacao: {
-          update: {
-            where: {
-              id: findByFtiPresent.Homologacao[0].id,
-            },
-            data: {
-              statusId: 4,
-            },
-          },
-        },
-      },
-    });
 
     await this.prisma.fti.create({
       data: {
