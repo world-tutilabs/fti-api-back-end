@@ -490,7 +490,7 @@ export class FtiService implements FtiRepository {
       take: 1,
     });
 
-    if (fti?.Homologacao[0]?.revisao !== 0) {
+    if (fti?.Homologacao[0]?.revisao !== 0 && status === 2) {
       await this.prisma.fti.update({
         where: { id: activeFti.id },
         data: {
@@ -523,7 +523,7 @@ export class FtiService implements FtiRepository {
     const fti = await this.prisma.fti.findFirst({
       where: { id },
       select: {
-        Homologacao: { select: { statusId: true } },
+        Homologacao: { select: { revisao: true, id: true, statusId: true } },
         Imagens: {
           select: { id: true },
         },
@@ -669,11 +669,15 @@ export class FtiService implements FtiRepository {
           },
         },
         Homologacao: {
-          deleteMany: {},
-          create: {
-            user_created: { user, Comentario: data.Comentario },
-            statusId: 1,
-            revisao: 0,
+          update: {
+            where: {
+              id: fti.Homologacao[0].id,
+            },
+            data: {
+              user_created: { user, Comentario: data.Comentario },
+              statusId: 1,
+              revisao: fti?.Homologacao[0]?.revisao === 0 ? 0 : undefined,
+            },
           },
         },
         InfoGeraisRegulagem: {
