@@ -41,6 +41,7 @@ export class FtiService implements FtiRepository {
         createdAt: true,
         modelo: true,
         materia_prima: true,
+        maquina: true,
         desc_materia_prima: true,
         cor: true,
         Homologacao: {
