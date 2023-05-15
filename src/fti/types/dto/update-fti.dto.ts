@@ -55,10 +55,15 @@ export class UpdateFtiDto implements Partial<Fti> {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    example:
-      '5.0.24.60.0660 - PP NATURAL CP442 - BRASKEM 95%+PIG. GRAN. P/ PP PRETO MBP 1060 - COLORTECH 5%',
+    example: 'Matéria Prima',
   })
   materia_prima: string;
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: 'Descrição da Matéria Prima',
+  })
+  desc_materia_prima: string;
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ example: 'XXXX' })

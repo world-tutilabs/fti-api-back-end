@@ -8,6 +8,7 @@ export class getAllFtiDto {
   modelo: string;
   maquina: string;
   materia_prima: string;
+  desc_materia_prima: string;
   cor: string;
   Homologacao: {
     revisao: number;
