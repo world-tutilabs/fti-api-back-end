@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "auto:prod": "yarn && yarn add @nestjs/swagger  && yarn prisma generate && yarn prisma db push && yarn build && yarn start:prod",
+    "auto:prod": "yarn && yarn add @nestjs/swagger  && yarn prisma generate && yarn prisma db seed && yarn build && yarn start:prod",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
