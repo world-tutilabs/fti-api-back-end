@@ -10,7 +10,7 @@ import { FtiRepository } from './repository/fti-repository';
 import { CreateFtiDto, HomologDto, UpdateFtiDto } from './types';
 import { MailerService } from '@nestjs-modules/mailer/dist/mailer.service';
 import * as fs from 'fs';
-import { VersioningParam } from './types/params/versioning';
+import { VersioningDto } from './types/dto/versioning';
 import { ReqUserDto } from './types/dto/req-user-fti.dto';
 
 @Injectable()
@@ -28,7 +28,7 @@ export class FtiService implements FtiRepository {
       skip: +offset,
       where: {
         Homologacao: {
-          every: { statusId: +id },
+          some: { statusId: +id === 1 ? 1 && 6 : +id },
         },
       },
       select: {
@@ -310,7 +310,7 @@ export class FtiService implements FtiRepository {
         cod_molde,
         cod_produto,
         cor,
-        maquina,
+        maquina: maquina.replace(/\s/g, ''),
         materia_prima,
         desc_materia_prima,
         modelo,
@@ -319,7 +319,7 @@ export class FtiService implements FtiRepository {
         Homologacao: {
           create: {
             user_created: { user, Comentario },
-            statusId: 1,
+            statusId: 6,
             revisao: 0,
           },
         },
@@ -465,15 +465,25 @@ export class FtiService implements FtiRepository {
         id: true,
         cod_molde: true,
         cod_produto: true,
+        maquina: true,
         Homologacao: { select: { id: true, revisao: true, statusId: true } },
       },
     });
 
-    if (fti?.Homologacao[0]?.statusId !== 1)
+    console.log(fti?.Homologacao[0]?.statusId);
+
+    if (
+      !(
+        fti?.Homologacao[0]?.statusId === 1 ||
+        fti?.Homologacao[0]?.statusId === 6
+      )
+    ) {
       throw new BadRequestException(
         `Fti id: ${id} is not on Approval process!`,
       );
+    }
 
+    // fti ativa listada em 'homologadas'
     const activeFti = await this.prisma.fti.findFirst({
       include: {
         Homologacao: true,
@@ -485,6 +495,7 @@ export class FtiService implements FtiRepository {
         AND: {
           cod_molde: fti.cod_molde,
           cod_produto: fti.cod_produto,
+          maquina: fti.maquina.replace(/\s/g, ''),
           Homologacao: {
             some: {
               statusId: 2,
@@ -496,7 +507,7 @@ export class FtiService implements FtiRepository {
     });
 
     // se a fti a ser homologada é versionada, e se foi selecionada para ser aprovada (status === 2), ela se torna a fti atual
-    if (fti?.Homologacao[0]?.revisao !== 0 && status === 2) {
+    if (fti?.Homologacao[0]?.revisao !== 0 && status === 2 && activeFti) {
       await this.prisma.fti.update({
         where: { id: activeFti.id },
         data: {
@@ -616,7 +627,7 @@ export class FtiService implements FtiRepository {
         cod_molde: data.cod_molde,
         cliente: data.cliente,
         modelo: data.modelo,
-        maquina: data.maquina,
+        maquina: data.maquina.replace(/\s/g, ''),
         materia_prima: data.materia_prima,
         desc_materia_prima: data.desc_materia_prima,
         cor: data.cor,
@@ -752,7 +763,7 @@ export class FtiService implements FtiRepository {
     });
   }
 
-  async versioning(data: VersioningParam): Promise<void> {
+  async versioning({ id, body, files, user }: VersioningDto): Promise<void> {
     const {
       produto,
       cod_produto,
@@ -784,44 +795,51 @@ export class FtiService implements FtiRepository {
       BicoCamaraQuente,
       Sequenciador,
       Comentario,
-    } = data.body;
+    } = body;
     const images = {
-      img_produto: data.files.img_produto
-        ? data.files.img_produto[0].filename
-        : data.body.img_produto,
-      img_camara: data.files.img_camara
-        ? data.files.img_camara[0].filename
-        : data.body.img_camara,
+      img_produto: files.img_produto
+        ? files.img_produto[0].filename
+        : body.img_produto,
+      img_camara: files.img_camara
+        ? files.img_camara[0].filename
+        : body.img_camara,
     };
 
-    const findByFtiPresent = await this.prisma.fti.findFirst({
-      include: {
-        Homologacao: true,
-      },
-      orderBy: {
-        id: 'desc',
-      },
-      where: {
-        AND: {
-          cod_molde: data.mold,
-          cod_produto: data.product_cod,
-          Homologacao: {
-            some: {
-              statusId: 2,
-            },
-          },
-        },
-      },
-      take: 1,
+    const fti = await this.prisma.fti.findFirst({
+      where: { id },
+      include: { Homologacao: true },
     });
 
-    if (!findByFtiPresent) {
+    // const homologatedFti = await this.prisma.fti.findFirst({
+    //   include: {
+    //     Homologacao: true,
+    //   },
+    //   orderBy: {
+    //     id: 'desc',
+    //   },
+    //   where: {
+    //     AND: {
+    //       cod_molde: fti.cod_molde,
+    //       cod_produto: fti.produto,
+    //       Homologacao: {
+    //         some: {
+    //           statusId: 2,
+    //         },
+    //       },
+    //     },
+    //   },
+    //   take: 1,
+    // });
+
+    if (!fti) {
       throw new HttpException(`FTI not found`, HttpStatus.BAD_REQUEST);
     }
 
-    if (findByFtiPresent.Homologacao[0].statusId !== 2) {
+    if (fti.Homologacao[0].statusId !== 2) {
       throw new HttpException(`FTI is not Homologated`, HttpStatus.BAD_REQUEST);
     }
+
+    console.log(fti.maquina, body.maquina);
 
     await this.prisma.fti.create({
       data: {
@@ -837,11 +855,11 @@ export class FtiService implements FtiRepository {
         qtd_cavidade: qtd_cavidade,
         Homologacao: {
           create: {
-            user_created: { user: data.user.user.user, Comentario: Comentario },
+            user_created: { user: user.user.user, Comentario: Comentario },
             statusId: 1,
             revisao:
-              findByFtiPresent.maquina === data.maquina //TODO:
-                ? findByFtiPresent.Homologacao[0].revisao + 1
+              fti.maquina.replace(/\s/g, '') === body.maquina.replace(/\s/g, '')
+                ? fti.Homologacao[0].revisao + 1
                 : 0,
           },
         },
@@ -960,11 +978,11 @@ export class FtiService implements FtiRepository {
       },
     });
 
+    if (fti.Homologacao[0].statusId === 6)
+      throw new BadRequestException(`Fti id: ${id} cannot be canceled`);
+
     if (fti.Homologacao[0].statusId !== 1)
       throw new BadRequestException(`Fti id: ${id} is not on approval`);
-
-    if (fti.Homologacao[0].revisao === 0)
-      throw new BadRequestException(`Fti id: ${id} is not versioned`);
 
     return await this.prisma.fti.update({
       where: { id: fti.id },

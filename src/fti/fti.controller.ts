@@ -1,4 +1,3 @@
-import { VersioningParam } from './types/params/versioning';
 import { Controller, Get, Param, UseInterceptors } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -134,8 +133,8 @@ export class FtiController {
     return await this.ftiService.update(+id, data, files, user.user);
   }
 
-  @Post('versioning/:mold&&:product_cod')
-  @ApiOperation({ summary: `Versiona FTI por molde e código do produto` })
+  @Post('versioning/:id')
+  @ApiOperation({ summary: `Versiona FTI` })
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileFieldsInterceptor(
@@ -147,12 +146,12 @@ export class FtiController {
     ),
   )
   async versioning(
-    @Param() { mold, product_cod }: VersioningParam,
+    @Param() { id }: FindByIdParam,
     @Body() data: UpdateFtiDto,
     @UploadedFiles() files: any,
     @Req() user: any,
   ) {
-    const newData = { mold, product_cod, body: data, files, user };
+    const newData = { id: +id, body: data, files, user };
     await this.ftiService.versioning(newData);
   }
 
