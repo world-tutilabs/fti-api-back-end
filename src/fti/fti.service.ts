@@ -495,6 +495,7 @@ export class FtiService implements FtiRepository {
       take: 1,
     });
 
+    // se a fti a ser homologada é versionada, e se foi selecionada para ser aprovada (status === 2), ela se torna a fti atual
     if (fti?.Homologacao[0]?.revisao !== 0 && status === 2) {
       await this.prisma.fti.update({
         where: { id: activeFti.id },
@@ -513,6 +514,7 @@ export class FtiService implements FtiRepository {
       });
     }
 
+    // aprova ou reprova de acordo com o status
     await this.prisma.homologacao.updateMany({
       data: {
         user_homologation: { user: user, Comentario },
@@ -837,7 +839,10 @@ export class FtiService implements FtiRepository {
           create: {
             user_created: { user: data.user.user.user, Comentario: Comentario },
             statusId: 1,
-            revisao: findByFtiPresent.Homologacao[0].revisao + 1,
+            revisao:
+              findByFtiPresent.maquina === data.maquina //TODO:
+                ? findByFtiPresent.Homologacao[0].revisao + 1
+                : 0,
           },
         },
         Dimensao: {
