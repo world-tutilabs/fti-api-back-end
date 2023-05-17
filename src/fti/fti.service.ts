@@ -470,8 +470,6 @@ export class FtiService implements FtiRepository {
       },
     });
 
-    console.log(fti?.Homologacao[0]?.statusId);
-
     if (
       !(
         fti?.Homologacao[0]?.statusId === 1 ||
@@ -528,7 +526,7 @@ export class FtiService implements FtiRepository {
     // aprova ou reprova de acordo com o status
     await this.prisma.homologacao.updateMany({
       data: {
-        user_homologation: { user: user, Comentario },
+        user_homologation: { user: user.user, Comentario },
         statusId: status,
       },
       where: {
