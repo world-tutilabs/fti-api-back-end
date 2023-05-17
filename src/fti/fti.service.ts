@@ -837,8 +837,6 @@ export class FtiService implements FtiRepository {
       throw new HttpException(`FTI is not Homologated`, HttpStatus.BAD_REQUEST);
     }
 
-    console.log(fti.maquina, body.maquina);
-
     await this.prisma.fti.create({
       data: {
         cliente,
