@@ -12,6 +12,8 @@ import { MailerService } from '@nestjs-modules/mailer/dist/mailer.service';
 import * as fs from 'fs';
 import { VersioningDto } from './types/dto/versioning';
 import { ReqUserDto } from './types/dto/req-user-fti.dto';
+import { create } from 'domain';
+import { async } from 'rxjs';
 
 @Injectable()
 export class FtiService implements FtiRepository {
@@ -22,13 +24,17 @@ export class FtiService implements FtiRepository {
 
   async listAllByStatus(data: any): Promise<Partial<Fti>[]> {
     const { id, limit, offset } = data;
+    const isEqualThree =
+      +id === 3 ? [{ statusId: 3 }, { statusId: 6 }] : [{ statusId: +id }];
 
     return await this.prisma.fti.findMany({
       take: +limit,
       skip: +offset,
       where: {
         Homologacao: {
-          some: { statusId: +id === 3 ? 3 && 6 : +id },
+          some: {
+            OR: isEqualThree,
+          },
         },
       },
       select: {
