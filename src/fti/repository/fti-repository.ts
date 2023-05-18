@@ -6,9 +6,7 @@ import { ReqUserDto } from '../types/dto/req-user-fti.dto';
 export abstract class FtiRepository {
   abstract listAllByStatus(id: number): Promise<Partial<Fti>[]>;
   abstract findOne(id: number): Promise<Partial<Fti>>;
-  abstract history(
-    molde: string,
-  ): Promise<Partial<Fti>[]> & Partial<Homologacao>;
+  abstract history(id: number): Promise<Partial<Fti>[]> & Partial<Homologacao>;
   abstract create(data: CreateFtiDto, files: any): Promise<Partial<Fti>>;
   abstract homolog(
     id: number,

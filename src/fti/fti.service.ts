@@ -28,7 +28,7 @@ export class FtiService implements FtiRepository {
       skip: +offset,
       where: {
         Homologacao: {
-          some: { statusId: +id === 1 ? 1 && 6 : +id },
+          some: { statusId: +id === 3 ? 3 && 6 : +id },
         },
       },
       select: {
@@ -244,11 +244,18 @@ export class FtiService implements FtiRepository {
     });
   }
 
-  async history(molde: string): Promise<Partial<Fti>[]> {
+  async history(id: number): Promise<Partial<Fti>[]> {
+    const fti = await this.prisma.fti.findFirst({
+      where: { id },
+      include: { Homologacao: true },
+    });
+
     return await this.prisma.fti.findMany({
       where: {
         AND: [
-          { cod_molde: molde },
+          { cod_molde: fti.cod_molde },
+          { cod_produto: fti.cod_produto },
+          { maquina: fti.maquina },
           { Homologacao: { every: { statusId: 4 } } },
         ],
       },
@@ -310,7 +317,7 @@ export class FtiService implements FtiRepository {
         cod_molde,
         cod_produto,
         cor,
-        maquina: maquina.replace(/\s/g, ''),
+        maquina,
         materia_prima,
         desc_materia_prima,
         modelo,
@@ -319,7 +326,7 @@ export class FtiService implements FtiRepository {
         Homologacao: {
           create: {
             user_created: { user, Comentario },
-            statusId: 6,
+            statusId: 1,
             revisao: 0,
           },
         },
@@ -455,10 +462,8 @@ export class FtiService implements FtiRepository {
   async homolog(
     id: number,
     { user }: ReqUserDto,
-    body: HomologDto,
+    { Comentario, status }: HomologDto,
   ): Promise<void> {
-    const { Comentario, status } = body;
-
     const fti = await this.prisma.fti.findFirst({
       where: { id },
       select: {
@@ -470,18 +475,12 @@ export class FtiService implements FtiRepository {
       },
     });
 
-    if (
-      !(
-        fti?.Homologacao[0]?.statusId === 1 ||
-        fti?.Homologacao[0]?.statusId === 6
-      )
-    ) {
+    if (!(fti?.Homologacao[0]?.statusId === 1)) {
       throw new BadRequestException(
         `Fti id: ${id} is not on Approval process!`,
       );
     }
 
-    // fti ativa listada em 'homologadas'
     const activeFti = await this.prisma.fti.findFirst({
       include: {
         Homologacao: true,
@@ -493,7 +492,7 @@ export class FtiService implements FtiRepository {
         AND: {
           cod_molde: fti.cod_molde,
           cod_produto: fti.cod_produto,
-          maquina: fti.maquina.replace(/\s/g, ''),
+          maquina: fti.maquina,
           Homologacao: {
             some: {
               statusId: 2,
@@ -504,8 +503,16 @@ export class FtiService implements FtiRepository {
       take: 1,
     });
 
-    // se a fti a ser homologada é versionada, e se foi selecionada para ser aprovada (status === 2), ela se torna a fti atual
-    if (fti?.Homologacao[0]?.revisao !== 0 && status === 2 && activeFti) {
+    const newMachine =
+      fti?.maquina?.replace(/\s/g, '') ===
+      activeFti?.maquina?.replace(/\s/g, '');
+
+    if (
+      fti?.Homologacao[0]?.revisao !== 0 &&
+      status === 2 &&
+      activeFti &&
+      newMachine
+    ) {
       await this.prisma.fti.update({
         where: { id: activeFti.id },
         data: {
@@ -523,14 +530,34 @@ export class FtiService implements FtiRepository {
       });
     }
 
+    const brandNewFti = await this.prisma.fti
+      .findFirst({
+        where: {
+          AND: [
+            { cod_molde: fti.cod_molde },
+            { cod_produto: fti.cod_produto },
+            { Homologacao: { some: { statusId: { equals: 2 } } } },
+          ],
+        },
+      })
+      .then((fti) => {
+        return fti === null;
+      });
+
     // aprova ou reprova de acordo com o status
     await this.prisma.homologacao.updateMany({
       data: {
         user_homologation: { user: user.user, Comentario },
-        statusId: status,
+        statusId:
+          brandNewFti &&
+          fti.Homologacao[0].revisao === 0 &&
+          !activeFti &&
+          status === 3
+            ? 6
+            : status,
       },
       where: {
-        ftiId: id,
+        ftiId: +id,
       },
     });
   }
@@ -546,7 +573,7 @@ export class FtiService implements FtiRepository {
       },
     });
 
-    if (fti.Homologacao[0].statusId !== 3)
+    if (fti.Homologacao[0].statusId !== 3 && fti.Homologacao[0].statusId !== 6)
       throw new BadRequestException(`Fti id: ${id} is not Reproved!`);
 
     if (files.img_produto) {
@@ -625,7 +652,7 @@ export class FtiService implements FtiRepository {
         cod_molde: data.cod_molde,
         cliente: data.cliente,
         modelo: data.modelo,
-        maquina: data.maquina.replace(/\s/g, ''),
+        maquina: data.maquina,
         materia_prima: data.materia_prima,
         desc_materia_prima: data.desc_materia_prima,
         cor: data.cor,
@@ -808,27 +835,6 @@ export class FtiService implements FtiRepository {
       include: { Homologacao: true },
     });
 
-    // const homologatedFti = await this.prisma.fti.findFirst({
-    //   include: {
-    //     Homologacao: true,
-    //   },
-    //   orderBy: {
-    //     id: 'desc',
-    //   },
-    //   where: {
-    //     AND: {
-    //       cod_molde: fti.cod_molde,
-    //       cod_produto: fti.produto,
-    //       Homologacao: {
-    //         some: {
-    //           statusId: 2,
-    //         },
-    //       },
-    //     },
-    //   },
-    //   take: 1,
-    // });
-
     if (!fti) {
       throw new HttpException(`FTI not found`, HttpStatus.BAD_REQUEST);
     }
@@ -974,11 +980,8 @@ export class FtiService implements FtiRepository {
       },
     });
 
-    if (fti.Homologacao[0].statusId === 6)
+    if (fti.Homologacao[0].statusId !== 3)
       throw new BadRequestException(`Fti id: ${id} cannot be canceled`);
-
-    if (fti.Homologacao[0].statusId !== 1)
-      throw new BadRequestException(`Fti id: ${id} is not on approval`);
 
     return await this.prisma.fti.update({
       where: { id: fti.id },

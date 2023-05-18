@@ -64,10 +64,12 @@ export class FtiController {
     return result;
   }
 
-  @Get('/history/:mold')
+  @Get('/history/:id')
   @ApiOperation({ summary: `Lista Histórico de FTI do respectivo molde` })
-  async history(@Param() { mold }: FindHistoryParams) {
-    return await this.ftiService.history(mold);
+  async history(@Param() { id }: FindByIdParam) {
+    const result = await this.ftiService.findOne(+id);
+    if (!result) throw new NotFoundException(`FTI ${id} Not Found`);
+    return await this.ftiService.history(+id);
   }
 
   @Post('create')
