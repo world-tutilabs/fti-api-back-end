@@ -1,4 +1,4 @@
-import { VersioningDto } from '../types/dto/versioning';
+import { VersioningDto } from '../types/dto/versioning.dto';
 import { Fti, Homologacao } from '@prisma/client';
 import { HomologDto } from '../types/dto/homolog-fti.dto';
 import { CreateFtiDto } from '../types/dto/create-fti.dto';

@@ -10,10 +10,8 @@ import { FtiRepository } from './repository/fti-repository';
 import { CreateFtiDto, HomologDto, UpdateFtiDto } from './types';
 import { MailerService } from '@nestjs-modules/mailer/dist/mailer.service';
 import * as fs from 'fs';
-import { VersioningDto } from './types/dto/versioning';
+import { VersioningDto } from './types/dto/versioning.dto';
 import { ReqUserDto } from './types/dto/req-user-fti.dto';
-import { create } from 'domain';
-import { async } from 'rxjs';
 
 @Injectable()
 export class FtiService implements FtiRepository {
