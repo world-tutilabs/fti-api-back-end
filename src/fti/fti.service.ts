@@ -315,7 +315,7 @@ export class FtiService implements FtiRepository {
       Comentario,
     } = data;
 
-    return await this.prisma.fti.create({
+    const newFti = await this.prisma.fti.create({
       data: {
         cliente,
         cod_molde,
@@ -461,6 +461,10 @@ export class FtiService implements FtiRepository {
         Tempos: true,
       },
     });
+
+    this.sendEmail(newFti);
+
+    return newFti;
   }
 
   async homolog(
@@ -1004,14 +1008,26 @@ export class FtiService implements FtiRepository {
     });
   }
 
-  // async sendEmail(ftiId: number, email: string, name: string) {
-  //   await this.mailerService.sendMail({
-  //     to: email,
-  //     subject: `FTI ${ftiId} aguardando homologação`,
-  //     template: './test.pug',
-  //     context: {
-  //       name: name,
-  //     },
-  //   });
-  // }
+  async sendEmail(fti: any) {
+    fti.updatedAt = fti.updatedAt.toLocaleDateString('pt-BR');
+
+    const emailEng = [
+      // 'Joseilton.rocha@tutiplast.com.br',
+      // 'Onofre.ribeiro@tutiplast.com.br',
+    ];
+
+    try {
+      await this.mailerService.sendMail({
+        to: emailEng,
+        subject: `FTI ${fti.id} aguardando homologação`,
+        template: './template.pug',
+        context: {
+          data: fti,
+        },
+      });
+      console.log('Email sent successfully');
+    } catch (error) {
+      console.error('Error sending message', error);
+    }
+  }
 }

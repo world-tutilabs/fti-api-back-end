@@ -1,0 +1,59 @@
+doctype html
+html
+  head
+    meta(charset='UTF-8')
+    meta(http-equiv='X-UA-Compatible' content='IE=edge')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    link(rel='preconnect' href='https://fonts.googleapis.com')
+    link(rel='preconnect' href='https://fonts.gstatic.com' crossorigin='')
+    link(href='https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap' rel='stylesheet')
+    title Email Admin Eng
+    style
+      include styles.css
+  body
+    table(border='1' width='100%')
+      tr.title
+        th(colspan='2') FTI
+        th.title(colspan='2') Ficha Técnica de Injeção - Nº#{data.id}
+        th.title-date(colspan='2') Data: #{data.updatedAt}
+      tr.subtitle
+        td(colspan='6') Status de FTI em Homologação
+      tr.content
+        td.content-internal(colspan='6')
+          table(width='100%')
+            tr(style='background-color: #EDEDED;')
+              th Cód. Produto
+              th Data
+              th Matéria Prima
+              th Máquina
+              th Produto
+              th Nº Revisão
+              th Cor
+              th Molde
+              th Cliente
+              th Modelo
+              th Status
+            tr
+              td #{data.cod_produto}
+              td #{data.updatedAt}
+              td #{data.materia_prima}
+              td #{data.maquina}
+              td #{data.produto}
+              td #{data.Homologacao[0].revisao}
+              td #{data.cor}
+              td #{data.cod_molde}
+              td #{data.cliente}
+              td #{data.modelo}
+              td #{data.Homologacao[0].statusId}
+              td(style='color: #25c032da; font-weight: bold;') Em Homologação
+
+    br
+    a(href='http://185.209.179.253:7701/homologacao') Ir para a página de FTIs Em Aprovação
+
+  .footer
+    td(colspan='6')
+      .image
+    td(colspan='6')
+      .footerText Tutilabs e todas as marcas associadas são marcas da Tutiplast
+    td(colspan='6')
+      .imageLabs

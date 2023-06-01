@@ -9,20 +9,20 @@ import { ConfigService } from '@nestjs/config';
 @Module({
   imports: [
     MailerModule.forRootAsync({
-      useFactory: async (config: ConfigService) => ({
+      useFactory: async (configService: ConfigService) => ({
         transport: {
-          host: config.get('EMAIL_HOST'),
+          host: configService.get('EMAIL_HOST'),
           secure: false,
           auth: {
-            user: config.get('EMAIL_USER'),
-            pass: config.get('EMAIL_PASSWORD'),
+            user: configService.get('EMAIL_USER'),
+            pass: configService.get('EMAIL_PASSWORD'),
           },
         },
         defaults: {
-          from: `"No Reply" <${config.get('EMAIL_FROM')}>`,
+          from: `"No Reply" <${configService.get('EMAIL_FROM')}>`,
         },
         template: {
-          dir: join(__dirname, '../../mail/templates'),
+          dir: join(__dirname, '../../src/mail/views'),
           adapter: new PugAdapter(),
           options: {
             strict: true,
