@@ -128,13 +128,11 @@ model Dimensao {
 }
 
 model DispositivoSeguranca {
-  id                    Int                                         @id @default(autoincrement())
-  ftiId                 Int
-  check_dispositivo_seg DispositivoSeguranca_check_dispositivo_seg?
-  sensor                DispositivoSeguranca_sensor?
-  micro_sw              DispositivoSeguranca_micro_sw?
-  fim_curso             DispositivoSeguranca_fim_curso?
-  Fti                   Fti                                         @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_dispositivo_seg")
+  id       Int                            @id @default(autoincrement())
+  ftiId    Int
+  sensor   DispositivoSeguranca_sensor?
+  micro_sw DispositivoSeguranca_micro_sw?
+  Fti      Fti                            @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_dispositivo_seg")
 
   @@index([ftiId])
 }
@@ -317,11 +315,6 @@ enum BicoCamaraQuente_check_bico_camara_quente {
   false
 }
 
-enum DispositivoSeguranca_check_dispositivo_seg {
-  true
-  false
-}
-
 enum Dosador_check_dosador {
   true
   false
@@ -343,11 +336,6 @@ enum DispositivoSeguranca_sensor {
 }
 
 enum DispositivoSeguranca_micro_sw {
-  true
-  false
-}
-
-enum DispositivoSeguranca_fim_curso {
   true
   false
 }

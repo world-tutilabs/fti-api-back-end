@@ -127,10 +127,8 @@ export class FtiService implements FtiRepository {
         },
         DispositivoSeguranca: {
           select: {
-            check_dispositivo_seg: true,
             sensor: true,
             micro_sw: true,
-            fim_curso: true,
           },
         },
         Dosador: {

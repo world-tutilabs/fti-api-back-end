@@ -107,8 +107,7 @@ export class UpdateFtiDto implements Partial<Fti> {
   @IsJSON()
   @IsNotEmpty()
   @ApiProperty({
-    example:
-      '{"check_dispositivo_seg":"true","sensor":"true","micro_sw":"true","fim_curso":"true"}',
+    example: '{"sensor":"true","micro_sw":"true"}',
   })
   DispositivoSeguranca: CreateDispositivoSeguranca;
   @IsJSON()
