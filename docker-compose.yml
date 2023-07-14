@@ -31,17 +31,17 @@ services:
       - ./prisma:/usr/src/api-node-fti/prisma/
     networks:
       - nw_new_api_fti   
-  # redis-fti:
-  #   container_name: redis-fti
-  #   image: redis
-  #   volumes:
-  #     - ./redis:/data
-  #   networks:
-  #     - nw_new_api_fti
+  redis-fti:
+    container_name: redis-fti
+    image: redis
+    volumes:
+      - ./redis:/data
+    networks:
+      - nw_new_api_fti
 networks:
   nw_new_api_fti:
     driver: bridge
     name: nw_new_api_fti
-  # redis:
-  #   driver: local
+  redis:
+    driver: local
     
