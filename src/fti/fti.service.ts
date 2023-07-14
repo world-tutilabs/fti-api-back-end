@@ -91,11 +91,6 @@ export class FtiService implements FtiRepository {
             },
           },
         },
-        AquecedorAgua: {
-          select: {
-            check_aquecedor: true,
-          },
-        },
         BicoCamaraQuente: {
           select: {
             check_bico_camara_quente: true,
@@ -195,12 +190,9 @@ export class FtiService implements FtiRepository {
             recalque: true,
           },
         },
-        RefrigeracaoMolde: {
+        Refrigeracao: {
           select: {
-            movel: true,
-            flutuante: true,
-            fixo: true,
-            gaveta: true,
+            refrigeracao: true,
           },
         },
         Resumo: {
@@ -293,9 +285,8 @@ export class FtiService implements FtiRepository {
       Dimensao,
       Estufagem,
       DispositivoSeguranca,
-      RefrigeracaoMolde,
+      Refrigeracao,
       Cavidade,
-      AquecedorAgua,
       Resumo,
       InfoGeraisRegulagem,
       Tempos,
@@ -347,19 +338,16 @@ export class FtiService implements FtiRepository {
             data: JSON.parse(DispositivoSeguranca as any),
           },
         },
-        RefrigeracaoMolde: {
+        Refrigeracao: {
           createMany: {
-            data: JSON.parse(RefrigeracaoMolde as any),
+            data: {
+              refrigeracao: JSON.parse(Refrigeracao as any),
+            },
           },
         },
         Cavidade: {
           createMany: {
             data: JSON.parse(Cavidade as any),
-          },
-        },
-        AquecedorAgua: {
-          create: {
-            check_aquecedor: AquecedorAgua as any,
           },
         },
         Resumo: {
@@ -436,7 +424,6 @@ export class FtiService implements FtiRepository {
         },
       },
       include: {
-        AquecedorAgua: true,
         BicoCamaraQuente: true,
         Cavidade: true,
         Cursos: true,
@@ -452,7 +439,7 @@ export class FtiService implements FtiRepository {
         Pressoes: true,
         ProgramacaoMachos: true,
         Recalque: true,
-        RefrigeracaoMolde: true,
+        Refrigeracao: true,
         Resumo: true,
         Sequenciador: true,
         TemperaturaCilindro: true,
@@ -664,12 +651,6 @@ export class FtiService implements FtiRepository {
         cor: data.cor,
         qtd_cavidade: data.qtd_cavidade,
         updatedAt: new Date(),
-        AquecedorAgua: {
-          deleteMany: {},
-          create: {
-            check_aquecedor: data.AquecedorAgua as any,
-          },
-        },
         BicoCamaraQuente: {
           deleteMany: {},
           createMany: {
@@ -760,10 +741,12 @@ export class FtiService implements FtiRepository {
             recalque: data.Recalque,
           },
         },
-        RefrigeracaoMolde: {
+        Refrigeracao: {
           deleteMany: {},
           createMany: {
-            data: JSON.parse(data.RefrigeracaoMolde as any),
+            data: {
+              refrigeracao: JSON.parse(data.Refrigeracao as any),
+            },
           },
         },
         Resumo: {
@@ -809,9 +792,8 @@ export class FtiService implements FtiRepository {
       Dimensao,
       Estufagem,
       DispositivoSeguranca,
-      RefrigeracaoMolde,
+      Refrigeracao,
       Cavidade,
-      AquecedorAgua,
       Resumo,
       InfoGeraisRegulagem,
       Tempos,
@@ -886,19 +868,14 @@ export class FtiService implements FtiRepository {
             data: JSON.parse(DispositivoSeguranca as any),
           },
         },
-        RefrigeracaoMolde: {
+        Refrigeracao: {
           createMany: {
-            data: JSON.parse(RefrigeracaoMolde as any),
+            data: { refrigeracao: JSON.parse(Refrigeracao as any) },
           },
         },
         Cavidade: {
           createMany: {
             data: JSON.parse(Cavidade as any),
-          },
-        },
-        AquecedorAgua: {
-          create: {
-            check_aquecedor: AquecedorAgua as any,
           },
         },
         Resumo: {

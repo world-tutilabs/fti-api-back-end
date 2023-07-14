@@ -2,7 +2,6 @@ import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import {
   Fti,
   Homologacao,
-  AquecedorAgua,
   BicoCamaraQuente,
   Cavidade,
   Cursos,
@@ -17,7 +16,7 @@ import {
   Pressoes,
   ProgramacaoMachos,
   Recalque,
-  RefrigeracaoMolde,
+  Refrigeracao,
   Resumo,
   Sequenciador,
   TemperaturaCilindro,
@@ -73,10 +72,6 @@ export class UpdateFtiDto implements Partial<Fti> {
   qtd_cavidade: string;
   @ApiHideProperty()
   Homologacao: CreateHomologacaoDto;
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty({ example: true })
-  AquecedorAgua: CreateAquecedorAguaDto;
   @IsJSON()
   @IsNotEmpty()
   @ApiProperty({
@@ -172,7 +167,7 @@ export class UpdateFtiDto implements Partial<Fti> {
   @ApiProperty({
     example: '{"movel":"4","fixo":"3","flutuante":"4","gaveta":"4"}',
   })
-  RefrigeracaoMolde: CreateRefrigeracaoMoldeDto;
+  Refrigeracao: CreateRefrigeracaoDto;
   @IsJSON()
   @IsNotEmpty()
   @ApiProperty({
@@ -209,7 +204,6 @@ export class UpdateFtiDto implements Partial<Fti> {
 }
 
 type CreateHomologacaoDto = Homologacao;
-type CreateAquecedorAguaDto = AquecedorAgua;
 type CreateBicoCamaraQuenteDto = BicoCamaraQuente;
 type CreateCavidadeDto = Cavidade;
 type CreateCursosDto = Cursos;
@@ -224,7 +218,7 @@ type CreateInjecaoDto = Injecao;
 type CreatePressoesDto = Pressoes;
 type CreateProgramacaoMachosDto = ProgramacaoMachos;
 type CreateRecalqueDto = Recalque;
-type CreateRefrigeracaoMoldeDto = RefrigeracaoMolde;
+type CreateRefrigeracaoDto = Refrigeracao;
 type CreateResumoDto = Resumo;
 type CreateSequenciadorDto = Sequenciador;
 type CreateTemperaturaCilindroDto = TemperaturaCilindro;
