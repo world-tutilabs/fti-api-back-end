@@ -202,15 +202,19 @@ model Injecao {
 }
 
 model Pressoes {
-  id                    Int    @id @default(autoincrement())
-  ftiId                 Int
-  pressao_media         String @default("0") @db.VarChar(250)
-  pressao_travamento    String @default("0") @db.VarChar(250)
-  pressao_avanco        String @default("0") @db.VarChar(250)
-  pressao_recuo         String @default("0") @db.VarChar(250)
-  pressao_descompressao String @default("0") @db.VarChar(250)
-  peso_galho            String @default("0") @db.VarChar(250)
-  Fti                   Fti    @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_pressoes")
+  id                        Int    @id @default(autoincrement())
+  ftiId                     Int
+  pressao_media             String @default("0") @db.VarChar(250)
+  pressao_travamento        String @default("0") @db.VarChar(250)
+  pressao_avanco            String @default("0") @db.VarChar(250)
+  pressao_recuo             String @default("0") @db.VarChar(250)
+  pressao_descompressao     String @default("0") @db.VarChar(250)
+  peso_galho                String @default("0") @db.VarChar(250)
+  vel_avanco_extrador       String @default("0") @db.VarChar(250)
+  vel_recuo_extrator        String @default("0") @db.VarChar(250)
+  pressao_descomp_traseira  String @default("0") @db.VarChar(250)
+  pressao_descomp_dianteira String @default("0") @db.VarChar(250)
+  Fti                       Fti    @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_pressoes")
 
   @@index([ftiId])
 }
@@ -277,17 +281,16 @@ model TemperaturaCilindro {
 }
 
 model Tempos {
-  id                          Int    @id @default(autoincrement())
-  ftiId                       Int
-  tempo_fechamento            String @default("0") @db.VarChar(250)
-  tempo_injecao               String @default("0") @db.VarChar(250)
-  tempo_recalque              String @default("0") @db.VarChar(250)
-  tempo_resfriamento          String @default("0") @db.VarChar(250)
-  tempo_abertura_molde        String @default("0") @db.VarChar(250)
-  tempo_extracao              String @default("0") @db.VarChar(250)
-  tempo_retirada_remocao_peca String @default("0") @db.VarChar(250)
-  reciclo_outros              String @default("0") @db.VarChar(250)
-  Fti                         Fti    @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_tempos")
+  id                   Int    @id @default(autoincrement())
+  ftiId                Int
+  tempo_fechamento     String @default("0") @db.VarChar(250)
+  tempo_injecao        String @default("0") @db.VarChar(250)
+  tempo_recalque       String @default("0") @db.VarChar(250)
+  tempo_resfriamento   String @default("0") @db.VarChar(250)
+  tempo_abertura_molde String @default("0") @db.VarChar(250)
+  tempo_extracao       String @default("0") @db.VarChar(250)
+  reciclo_outros       String @default("0") @db.VarChar(250)
+  Fti                  Fti    @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_tempos")
 
   @@index([ftiId])
 }

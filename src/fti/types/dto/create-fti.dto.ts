@@ -193,7 +193,7 @@ export class CreateFtiDto implements Partial<Fti> {
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '{"tempo_fechamento":"12","tempo_injecao":"13","tempo_recalque":"14","tempo_resfriamento":"33","tempo_abertura_molde":"22","tempo_extracao":"33","tempo_retirada_remocao_peca":"44","reciclo_outros":"44"}',
+      '{"tempo_fechamento":"12","tempo_injecao":"13","tempo_recalque":"14","tempo_resfriamento":"33","tempo_abertura_molde":"22","tempo_extracao":"33","reciclo_outros":"44"}',
   })
   Tempos: CreateTemposDto;
   @ApiProperty({ type: 'string', format: 'binary', required: true })

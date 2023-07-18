@@ -175,6 +175,10 @@ export class FtiService implements FtiRepository {
             pressao_recuo: true,
             pressao_descompressao: true,
             peso_galho: true,
+            vel_recuo_extrator: true,
+            vel_avanco_extrador: true,
+            pressao_descomp_traseira: true,
+            pressao_descomp_dianteira: true,
           },
         },
         ProgramacaoMachos: {
@@ -230,7 +234,6 @@ export class FtiService implements FtiRepository {
             tempo_resfriamento: true,
             tempo_abertura_molde: true,
             tempo_extracao: true,
-            tempo_retirada_remocao_peca: true,
             reciclo_outros: true,
           },
         },
