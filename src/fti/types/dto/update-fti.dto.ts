@@ -146,7 +146,7 @@ export class UpdateFtiDto implements Partial<Fti> {
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '{"pressao_media":"3","pressao_travamento":"3","pressao_avanco":"3","pressao_recuo":"33","pressao_descompressao":"3","peso_galho":"0"}',
+      '{"pressao_media":"3","pressao_travamento":"3","pressao_avanco":"3","pressao_recuo":"33","pressao_descompressao":"3","peso_galho":"0","vel_avanco_extrador":"3","vel_recuo_extrator":"3","pressao_descomp_traseira": "3","pressao_descomp_dianteira": "3","vel_descomp_traseira":"3","vel_descomp_dianteira": "3"}',
   })
   Pressoes: CreatePressoesDto;
   @IsJSON()

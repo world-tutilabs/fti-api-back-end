@@ -179,6 +179,8 @@ export class FtiService implements FtiRepository {
             vel_avanco_extrador: true,
             pressao_descomp_traseira: true,
             pressao_descomp_dianteira: true,
+            vel_descomp_traseira: true,
+            vel_descomp_dianteira: true,
           },
         },
         ProgramacaoMachos: {
