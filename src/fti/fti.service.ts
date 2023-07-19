@@ -107,7 +107,6 @@ export class FtiService implements FtiRepository {
           select: {
             curso_abertura: true,
             curso_descompressao: true,
-            tempo_recalque: true,
             curso_avanco_extrator: true,
             inicio_protecao_molde: true,
           },
@@ -174,7 +173,6 @@ export class FtiService implements FtiRepository {
             pressao_avanco: true,
             pressao_recuo: true,
             pressao_descompressao: true,
-            peso_galho: true,
             vel_recuo_extrator: true,
             vel_avanco_extrador: true,
             pressao_descomp_traseira: true,
@@ -452,7 +450,7 @@ export class FtiService implements FtiRepository {
       },
     });
 
-    this.sendEmail(newFti);
+    // this.sendEmail(newFti);
 
     return newFti;
   }
