@@ -106,7 +106,6 @@ model Cursos {
   ftiId                 Int
   curso_abertura        String @default("0") @db.VarChar(250)
   curso_descompressao   String @default("0") @db.VarChar(250)
-  tempo_recalque        String @default("0") @db.VarChar(250)
   curso_avanco_extrator String @default("0") @db.VarChar(250)
   inicio_protecao_molde String @default("0") @db.VarChar(250)
   Fti                   Fti    @relation(fields: [ftiId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK1_fti_cursos")
@@ -209,7 +208,6 @@ model Pressoes {
   pressao_avanco            String @default("0") @db.VarChar(250)
   pressao_recuo             String @default("0") @db.VarChar(250)
   pressao_descompressao     String @default("0") @db.VarChar(250)
-  peso_galho                String @default("0") @db.VarChar(250)
   vel_avanco_extrador       String @default("0") @db.VarChar(250)
   vel_recuo_extrator        String @default("0") @db.VarChar(250)
   pressao_descomp_traseira  String @default("0") @db.VarChar(250)
