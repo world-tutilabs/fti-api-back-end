@@ -96,6 +96,8 @@ export class FtiController {
       },
       user: user.user.user,
     });
+    console.log(newData);
+
     return this.ftiService.create(newData);
   }
 
