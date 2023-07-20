@@ -116,7 +116,6 @@ export class FtiService implements FtiRepository {
             altura: true,
             comprimento: true,
             largura: true,
-            produto: true,
           },
         },
         DispositivoSeguranca: {
