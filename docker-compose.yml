@@ -33,7 +33,7 @@ services:
       - nw_new_api_fti   
   redis-fti:
     container_name: redis-fti
-    image: redis
+    image: redis:6
     volumes:
       - ./redis:/data
     networks:
@@ -42,3 +42,5 @@ networks:
   nw_new_api_fti:
     driver: bridge
     name: nw_new_api_fti
+  redis:
+    driver: bridge
