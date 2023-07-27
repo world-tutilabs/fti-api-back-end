@@ -12,7 +12,6 @@ services:
       - '${PORT_DATABASE}:3306'
     volumes:
       - ./mysql_data/:/var/lib/mysql # Adicionar em DockerIgnore
-
     networks:
       - nw_new_api_fti
   nest-api-fti-container:
