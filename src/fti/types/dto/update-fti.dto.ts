@@ -153,7 +153,7 @@ export class UpdateFtiDto implements Partial<Fti> {
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '{"check_programacao_machos":"true","check_posicao":"true","check_tempo":"true","macho":[[{"tempo":{"entrada":"3","saida":"3"}},{"posicao":{"entrada":"3","saida":"3"}},{"pressao":{"entrada":"3","saida":"3"}},{"velocidade":{"entrada":"3","saida":"3"}}],[{"tempo":{"entrada":"3","saida":"3"}},{"posicao":{"entrada":"3","saida":"3"}},{"pressao":{"entrada":"3","saida":"3"}},{"velocidade":{"entrada":"3","saida":"3"}}],[{"tempo":{"entrada":"3","saida":"3"}},{"posicao":{"entrada":"3","saida":"3"}},{"pressao":{"entrada":"3","saida":"3"}},{"velocidade":{"entrada":"3","saida":"3"}}],[{"tempo":{"entrada":"3","saida":"3"}},{"posicao":{"entrada":"3","saida":"3"}},{"pressao":{"entrada":"3","saida":"3"}},{"velocidade":{"entrada":"3","saida":"3"}}]]}',
+      '{"check_programacao_machos":"false","macho":[[{"check":"false"},{"tempo":{"entrada":"3","saida":"3"}},{"posicao":{"entrada":"3","saida":"3"}},{"pressao":{"entrada":"3","saida":"3"}},{"velocidade":{"entrada":"3","saida":"3"}}],[{"check":"false"},{"tempo":{"entrada":"3","saida":"3"}},{"posicao":{"entrada":"3","saida":"3"}},{"pressao":{"entrada":"3","saida":"3"}},{"velocidade":{"entrada":"3","saida":"3"}}],[{"check":"false"},{"tempo":{"entrada":"3","saida":"3"}},{"posicao":{"entrada":"3","saida":"3"}},{"pressao":{"entrada":"3","saida":"3"}},{"velocidade":{"entrada":"3","saida":"3"}}],[{"check":"false"},{"tempo":{"entrada":"3","saida":"3"}},{"posicao":{"entrada":"3","saida":"3"}},{"pressao":{"entrada":"3","saida":"3"}},{"velocidade":{"entrada":"3","saida":"3"}}]]}',
   })
   ProgramacaoMachos: CreateProgramacaoMachosDto;
   @IsNotEmpty()
@@ -179,14 +179,14 @@ export class UpdateFtiDto implements Partial<Fti> {
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '{"check_sequenciador":"true","sequenciador":[{"bico":"1","open":"4","modo":"5"},{"bico":"2","open":"3","modo":"4"},{"bico":"3","open":"44","modo":"4"},{"bico":"4","open":"4","modo":"4"},{"bico":"5","open":"4","modo":"4"},{"bico":"6","open":"4","modo":"5"},{"bico":"7","open":"5","modo":"434"},{"bico":"8","open":"34","modo":"34"}]}',
+      '{"check_sequenciador":"true","sequenciador":[{"bico":"1","modo":"A","delay":"1.5","open":"1.6"},{"bico":"1","modo":"A","delay":"1.5","open":"1.6"},{"bico":"1","modo":"A","delay":"1.5","open":"1.6"},{"bico":"1","modo":"B","delay":"1.5","open":"1.6"},{"bico":"1","modo":"B","delay":"1.5","open":"1.6"},{"bico":"1","modo":"B","delay":"1.5","open":"1.6"},{"bico":"1","modo":"B","delay":"1.5","open":"1.6"},{"bico":"1","modo":"B","delay":"1.5","open":"1.6"}]}',
   })
   Sequenciador: CreateSequenciadorDto;
   @IsJSON()
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '{"bico":"3","zona_1":"3","zona_2":"4","zona_3":"3","zona_4":"2","zona_5":"3","zona_6":"4","zona_7":"4"}',
+      '{"zona_1":"3","zona_2":"4","zona_3":"3","zona_4":"2","zona_5":"3","zona_6":"4","zona_7":"4"}',
   })
   TemperaturaCilindro: CreateTemperaturaCilindroDto;
   @IsJSON()
