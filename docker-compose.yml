@@ -44,3 +44,4 @@ networks:
     name: nw_new_api_fti
   redis:
     driver: bridge
+    name: nw_new_api_fti
