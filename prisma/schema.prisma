@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL_LOCAL")
 }
 
 model NovosTryouts {
@@ -204,11 +204,15 @@ model Pressoes {
   ftiId                     Int
   pressao_media             String @default("0") @db.VarChar(250)
   pressao_travamento        String @default("0") @db.VarChar(250)
-  pressao_avanco            String @default("0") @db.VarChar(250)
-  pressao_recuo             String @default("0") @db.VarChar(250)
+  pressao_avanco_1          String @default("0") @db.VarChar(250)
+  pressao_avanco_2          String @default("0") @db.VarChar(250)
+  pressao_recuo_1           String @default("0") @db.VarChar(250)
+  pressao_recuo_2           String @default("0") @db.VarChar(250)
   pressao_descompressao     String @default("0") @db.VarChar(250)
-  vel_avanco_extrador       String @default("0") @db.VarChar(250)
-  vel_recuo_extrator        String @default("0") @db.VarChar(250)
+  vel_avanco_extrador_1     String @default("0") @db.VarChar(250)
+  vel_avanco_extrador_2     String @default("0") @db.VarChar(250)
+  vel_recuo_extrator_1      String @default("0") @db.VarChar(250)
+  vel_recuo_extrator_2      String @default("0") @db.VarChar(250)
   pressao_descomp_traseira  String @default("0") @db.VarChar(250)
   pressao_descomp_dianteira String @default("0") @db.VarChar(250)
   vel_descomp_traseira      String @default("0") @db.VarChar(250)
