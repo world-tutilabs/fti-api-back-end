@@ -268,6 +268,7 @@ model Sequenciador {
 model TemperaturaCilindro {
   id     Int     @id @default(autoincrement())
   ftiId  Int
+  bico   Int
   zona_1 String? @default("0") @db.VarChar(250)
   zona_2 String? @default("0") @db.VarChar(250)
   zona_3 String? @default("0") @db.VarChar(250)
