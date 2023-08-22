@@ -217,6 +217,7 @@ export class FtiService implements FtiRepository {
         },
         TemperaturaCilindro: {
           select: {
+            bico: true,
             zona_1: true,
             zona_2: true,
             zona_3: true,
