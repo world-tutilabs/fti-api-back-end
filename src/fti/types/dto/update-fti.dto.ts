@@ -186,7 +186,7 @@ export class UpdateFtiDto implements Partial<Fti> {
   @IsNotEmpty()
   @ApiProperty({
     example:
-      '{"bico":true,"zona_1":"3","zona_2":"4","zona_3":"3","zona_4":"2","zona_5":"3","zona_6":"4","zona_7":"4"}',
+      '{"bico":"1","zona_1":"3","zona_2":"4","zona_3":"3","zona_4":"2","zona_5":"3","zona_6":"4","zona_7":"4"}',
   })
   TemperaturaCilindro: CreateTemperaturaCilindroDto;
   @IsJSON()
